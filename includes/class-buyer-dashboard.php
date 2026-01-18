@@ -137,6 +137,7 @@ class Community_Auctions_Buyer_Dashboard {
 
 		<script>
 		(function() {
+			// Tab switching.
 			var tabs = document.querySelectorAll('.ca-buyer-dashboard .ca-dashboard-tabs .ca-tab');
 			tabs.forEach(function(tab) {
 				tab.addEventListener('click', function() {
@@ -157,6 +158,45 @@ class Community_Auctions_Buyer_Dashboard {
 						target.hidden = false;
 					}
 				});
+			});
+
+			// Seller contact toggle.
+			var toggles = document.querySelectorAll('.ca-seller-contact-toggle');
+			toggles.forEach(function(toggle) {
+				toggle.addEventListener('click', function(e) {
+					e.stopPropagation();
+					var targetId = this.getAttribute('aria-controls');
+					var dropdown = document.getElementById(targetId);
+					if (!dropdown) return;
+
+					var expanded = this.getAttribute('aria-expanded') === 'true';
+
+					// Close all other dropdowns first.
+					document.querySelectorAll('.ca-seller-contact-dropdown').forEach(function(d) {
+						d.hidden = true;
+					});
+					document.querySelectorAll('.ca-seller-contact-toggle').forEach(function(t) {
+						t.setAttribute('aria-expanded', 'false');
+					});
+
+					// Toggle current dropdown.
+					if (!expanded) {
+						dropdown.hidden = false;
+						this.setAttribute('aria-expanded', 'true');
+					}
+				});
+			});
+
+			// Close dropdown when clicking outside.
+			document.addEventListener('click', function(e) {
+				if (!e.target.closest('.ca-seller-contact-wrapper')) {
+					document.querySelectorAll('.ca-seller-contact-dropdown').forEach(function(d) {
+						d.hidden = true;
+					});
+					document.querySelectorAll('.ca-seller-contact-toggle').forEach(function(t) {
+						t.setAttribute('aria-expanded', 'false');
+					});
+				}
 			});
 		})();
 		</script>
@@ -306,10 +346,14 @@ class Community_Auctions_Buyer_Dashboard {
 				<a href="<?php echo esc_url( get_permalink( $auction_id ) ); ?>" class="ca-action-link">
 					<?php esc_html_e( 'View', 'community-auctions' ); ?>
 				</a>
-				<?php if ( $pay_url ) : ?>
-					<a href="<?php echo esc_url( $pay_url ); ?>" class="ca-action-link ca-action-link--primary">
+				<?php if ( $pay_url && ! $paid ) : ?>
+					<a href="<?php echo esc_url( $pay_url ); ?>" class="ca-action-link ca-action-link--primary ca-pay-now-btn">
 						<?php esc_html_e( 'Pay Now', 'community-auctions' ); ?>
 					</a>
+				<?php elseif ( ! $order_id && ! $paid ) : ?>
+					<span class="ca-action-link ca-action-link--notice" title="<?php esc_attr_e( 'Contact seller to arrange payment', 'community-auctions' ); ?>">
+						<?php esc_html_e( 'Contact Seller for Payment', 'community-auctions' ); ?>
+					</span>
 				<?php endif; ?>
 				<?php echo self::render_seller_contact( $auction_id, $seller_id ); ?>
 			</div>
@@ -331,34 +375,55 @@ class Community_Auctions_Buyer_Dashboard {
 			return '';
 		}
 
+		// Get BuddyPress profile URL if available.
+		$profile_url = '';
+		if ( function_exists( 'bp_core_get_user_domain' ) ) {
+			$profile_url = bp_core_get_user_domain( $seller_id );
+		}
+
+		// Get message URL if BuddyPress Messages is active.
+		$message_url = '';
+		if ( function_exists( 'bp_is_active' ) && bp_is_active( 'messages' ) && function_exists( 'bp_core_get_user_domain' ) ) {
+			$message_url = trailingslashit( bp_core_get_user_domain( $seller_id ) ) . 'messages/compose/';
+		}
+
 		ob_start();
 		?>
-		<button type="button" class="ca-action-link ca-seller-contact-toggle" aria-expanded="false" aria-controls="ca-seller-contact-<?php echo esc_attr( $auction_id ); ?>">
-			<?php esc_html_e( 'Seller Contact', 'community-auctions' ); ?>
-		</button>
-		<div id="ca-seller-contact-<?php echo esc_attr( $auction_id ); ?>" class="ca-seller-contact" hidden>
-			<p>
-				<strong><?php esc_html_e( 'Name:', 'community-auctions' ); ?></strong>
-				<?php echo esc_html( $seller->display_name ); ?>
-			</p>
-			<p>
-				<strong><?php esc_html_e( 'Email:', 'community-auctions' ); ?></strong>
-				<a href="mailto:<?php echo esc_attr( $seller->user_email ); ?>"><?php echo esc_html( $seller->user_email ); ?></a>
-			</p>
+		<div class="ca-seller-contact-wrapper">
+			<button type="button" class="ca-action-link ca-seller-contact-toggle" aria-expanded="false" aria-controls="ca-seller-contact-<?php echo esc_attr( $auction_id ); ?>" data-auction-id="<?php echo esc_attr( $auction_id ); ?>">
+				<?php esc_html_e( 'Contact Seller', 'community-auctions' ); ?>
+				<span class="ca-toggle-icon" aria-hidden="true">▼</span>
+			</button>
+			<div id="ca-seller-contact-<?php echo esc_attr( $auction_id ); ?>" class="ca-seller-contact-dropdown" hidden>
+				<div class="ca-seller-contact-content">
+					<div class="ca-seller-info">
+						<p>
+							<strong><?php esc_html_e( 'Seller:', 'community-auctions' ); ?></strong>
+							<?php echo esc_html( $seller->display_name ); ?>
+						</p>
+						<p>
+							<strong><?php esc_html_e( 'Email:', 'community-auctions' ); ?></strong>
+							<a href="mailto:<?php echo esc_attr( $seller->user_email ); ?>"><?php echo esc_html( $seller->user_email ); ?></a>
+						</p>
+					</div>
+					<div class="ca-seller-actions">
+						<a href="mailto:<?php echo esc_attr( $seller->user_email ); ?>" class="ca-btn ca-btn--secondary">
+							<?php esc_html_e( 'Send Email', 'community-auctions' ); ?>
+						</a>
+						<?php if ( $message_url ) : ?>
+							<a href="<?php echo esc_url( $message_url ); ?>" class="ca-btn ca-btn--secondary">
+								<?php esc_html_e( 'Send Message', 'community-auctions' ); ?>
+							</a>
+						<?php endif; ?>
+						<?php if ( $profile_url ) : ?>
+							<a href="<?php echo esc_url( $profile_url ); ?>" class="ca-btn ca-btn--outline">
+								<?php esc_html_e( 'View Profile', 'community-auctions' ); ?>
+							</a>
+						<?php endif; ?>
+					</div>
+				</div>
+			</div>
 		</div>
-		<script>
-		(function() {
-			var toggle = document.querySelector('.ca-seller-contact-toggle[aria-controls="ca-seller-contact-<?php echo esc_js( $auction_id ); ?>"]');
-			var contact = document.getElementById('ca-seller-contact-<?php echo esc_js( $auction_id ); ?>');
-			if (toggle && contact) {
-				toggle.addEventListener('click', function() {
-					var expanded = this.getAttribute('aria-expanded') === 'true';
-					this.setAttribute('aria-expanded', !expanded);
-					contact.hidden = expanded;
-				});
-			}
-		})();
-		</script>
 		<?php
 		return ob_get_clean();
 	}

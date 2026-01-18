@@ -1262,18 +1262,152 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
-.ca-action-link--primary {
+.ca-action-link--primary,
+.ca-pay-now-btn {
   background: var(--ca-ember);
   border-color: var(--ca-ember);
-  color: #fff;
+  color: #fff !important;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
 }
 
-.ca-action-link--primary:hover {
+.ca-action-link--primary:hover,
+.ca-pay-now-btn:hover {
   background: #b05118;
   border-color: #b05118;
+  color: #fff !important;
+}
+
+.ca-action-link--notice {
+  color: #856404;
+  background: #fff3cd;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  border: 1px solid #ffc107;
+}
+
+/* Seller Contact Wrapper */
+.ca-seller-contact-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.ca-seller-contact-toggle {
+  background: transparent;
+  border: 1px solid #ccc;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.ca-seller-contact-toggle:hover {
+  background: #f5f5f5;
+  border-color: #999;
+}
+
+.ca-seller-contact-toggle[aria-expanded="true"] {
+  background: #f5f5f5;
+}
+
+.ca-seller-contact-toggle[aria-expanded="true"] .ca-toggle-icon {
+  transform: rotate(180deg);
+}
+
+.ca-toggle-icon {
+  font-size: 10px;
+  transition: transform 0.2s ease;
+}
+
+.ca-seller-contact-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  z-index: 100;
+  min-width: 280px;
+  background: #fff;
+  border: 1px solid #e1d4c1;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.ca-seller-contact-content {
+  padding: 16px;
+}
+
+.ca-seller-info {
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.ca-seller-info p {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+.ca-seller-info p:last-child {
+  margin-bottom: 0;
+}
+
+.ca-seller-info a {
+  color: var(--ca-forest);
+  text-decoration: none;
+}
+
+.ca-seller-info a:hover {
+  text-decoration: underline;
+}
+
+.ca-seller-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ca-btn {
+  display: inline-block;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ca-btn--secondary {
+  background: var(--ca-forest);
+  color: #fff;
+  border: 1px solid var(--ca-forest);
+}
+
+.ca-btn--secondary:hover {
+  background: #153029;
   color: #fff;
 }
 
+.ca-btn--outline {
+  background: transparent;
+  color: var(--ca-forest);
+  border: 1px solid var(--ca-forest);
+}
+
+.ca-btn--outline:hover {
+  background: var(--ca-forest);
+  color: #fff;
+}
+
+/* Legacy seller contact (for backwards compat) */
 .ca-seller-contact {
   margin-top: 8px;
   padding: 12px;

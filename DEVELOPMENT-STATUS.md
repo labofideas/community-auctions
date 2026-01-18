@@ -1,6 +1,6 @@
 # Community Auctions Plugin - Development Status
 
-**Last Updated:** January 18, 2026
+**Last Updated:** January 18, 2026 (Session 2)
 **Plugin Version:** 0.1.0
 **Location:** `/Users/shashank/Local Sites/community-hashtags/app/public/wp-content/plugins/community-auctions/`
 
@@ -241,12 +241,68 @@ community-auctions/
 | `/community-auctions/v1/status/batch` | POST | Batch status updates |
 | `/community-auctions/v1/search` | GET | Search auctions |
 
+### 3. Buyer Dashboard Payment Fix
+**Issue:** Won auctions showed "Contact Seller" button that didn't work, and no "Pay Now" button
+**Files Modified:**
+- `class-buyer-dashboard.php` (lines 305-389) - Fixed payment button logic and seller contact dropdown
+- `assets/css/auction.css` - Added button and dropdown styles
+
+**Changes:**
+1. Fixed `render_won_row()` to show "Pay Now" button when WooCommerce order exists
+2. Added "Contact Seller for Payment" notice when no order exists
+3. Rewrote `render_seller_contact()` with:
+   - BuddyPress profile URL integration
+   - BuddyPress Messages compose link
+   - Dropdown with seller info, email link, action buttons
+4. Added JavaScript for dropdown toggle with ARIA accessibility
+
+### 4. Demo Data Improvements
+**Issue:** Demo data didn't create WooCommerce orders for won auctions
+**File Modified:** `class-demo-data.php`
+
+**Enhancements Made:**
+1. **More diverse auction states:**
+   - "Ending Soon" auction (ends in 45 minutes for urgency testing)
+   - "Buy Now" enabled auction
+   - Auctions with different sellers (not all by current user)
+   - Won auction where current user is winner (buyer dashboard testing)
+   - Won auction where current user is seller (seller dashboard testing)
+
+2. **WooCommerce integration:**
+   - Auto-creates WooCommerce orders for ended auctions with winners
+   - Orders are marked as demo data for cleanup
+   - Payment links work immediately after import
+
+3. **Watchlist entries:**
+   - Auto-adds live/upcoming auctions to current user's watchlist
+   - Excludes auctions created by current user
+
+4. **Better bid history:**
+   - Bids created for both live and ended auctions
+   - Winner is the highest bidder in ended auctions
+   - Alternating bidders for realistic history
+
+5. **New category added:** Jewelry
+
+**New Demo Auctions (8 total):**
+| Auction | Type | Testing Purpose |
+|---------|------|-----------------|
+| Vintage Rolex Watch | Live with bids | Bid placing |
+| PlayStation 5 | Live no bids | Starting bid |
+| Nike Sneakers | Ending Soon (45 min) | Urgency countdown |
+| MacBook Pro | Buy Now enabled | Instant purchase |
+| Oil Painting | Upcoming (2 days) | Countdown to start |
+| Comic Book Collection | Ended, current user won | Buyer dashboard |
+| Diamond Ring | Ended, current user sold | Seller dashboard |
+| Antique Telescope | Ended, no bids | Unsold auction |
+
 ---
 
 ## Known Issues / TODO
 
 1. **Activity CSS** - May need custom CSS for activity stream rich content (thumbnails, badges)
 2. **Testing** - New bid activities need testing to verify rich content displays correctly
+3. **Demo Data Re-import** - For existing installations, re-import demo data to get WooCommerce orders
 
 ---
 

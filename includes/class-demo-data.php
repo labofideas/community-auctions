@@ -64,11 +64,21 @@ class Community_Auctions_Demo_Data {
 				<h2><?php esc_html_e( 'What will be created?', 'community-auctions' ); ?></h2>
 				<ul style="list-style: disc; margin-left: 20px;">
 					<li><?php esc_html_e( '6 Pages with shortcodes (Submit Auction, My Auctions, My Purchases, Watchlist, Search, Upcoming)', 'community-auctions' ); ?></li>
-					<li><?php esc_html_e( '3 Auction categories (Electronics, Collectibles, Art & Antiques)', 'community-auctions' ); ?></li>
-					<li><?php esc_html_e( '5 Sample auctions with different states (Live, Upcoming, Ended)', 'community-auctions' ); ?></li>
-					<li><?php esc_html_e( 'Sample bids on live auctions', 'community-auctions' ); ?></li>
-					<li><?php esc_html_e( 'Auctions menu item added to primary navigation with sub-pages', 'community-auctions' ); ?></li>
-					<li><?php esc_html_e( 'BuddyPress activities for live auctions (if BuddyPress is active)', 'community-auctions' ); ?></li>
+					<li><?php esc_html_e( '4 Auction categories (Electronics, Collectibles, Art & Antiques, Jewelry)', 'community-auctions' ); ?></li>
+					<li><?php esc_html_e( '8 Sample auctions with different states:', 'community-auctions' ); ?>
+						<ul style="list-style: circle; margin-left: 20px;">
+							<li><?php esc_html_e( 'Live auctions with bids', 'community-auctions' ); ?></li>
+							<li><?php esc_html_e( 'Ending soon auction (urgency testing)', 'community-auctions' ); ?></li>
+							<li><?php esc_html_e( 'Buy Now enabled auction', 'community-auctions' ); ?></li>
+							<li><?php esc_html_e( 'Upcoming auctions', 'community-auctions' ); ?></li>
+							<li><?php esc_html_e( 'Ended auctions with winners & WooCommerce orders', 'community-auctions' ); ?></li>
+						</ul>
+					</li>
+					<li><?php esc_html_e( 'Sample bids on live and ended auctions', 'community-auctions' ); ?></li>
+					<li><?php esc_html_e( 'Watchlist entries for testing', 'community-auctions' ); ?></li>
+					<li><?php esc_html_e( 'WooCommerce payment orders for won auctions', 'community-auctions' ); ?></li>
+					<li><?php esc_html_e( 'Auctions menu item added to primary navigation', 'community-auctions' ); ?></li>
+					<li><?php esc_html_e( 'BuddyPress activities for live auctions (if active)', 'community-auctions' ); ?></li>
 				</ul>
 
 				<form method="post" style="margin-top: 20px;">
@@ -159,6 +169,12 @@ class Community_Auctions_Demo_Data {
 		// Create sample bids.
 		self::create_bids( $auctions );
 
+		// Create WooCommerce orders for won auctions.
+		self::create_woocommerce_orders( $auctions );
+
+		// Create watchlist entries for testing.
+		self::create_watchlist_entries( $auctions );
+
 		// Add pages to navigation menu.
 		self::add_pages_to_menu( $pages );
 
@@ -190,6 +206,11 @@ class Community_Auctions_Demo_Data {
 				'name' => __( 'Art & Antiques', 'community-auctions' ),
 				'slug' => 'art-antiques',
 				'desc' => __( 'Artwork and antique items', 'community-auctions' ),
+			),
+			array(
+				'name' => __( 'Jewelry', 'community-auctions' ),
+				'slug' => 'jewelry',
+				'desc' => __( 'Watches, rings, necklaces, and precious items', 'community-auctions' ),
 			),
 		);
 
@@ -286,22 +307,24 @@ class Community_Auctions_Demo_Data {
 	 * @return array Created auction IDs.
 	 */
 	private static function create_auctions( $categories ) {
-		$user_id = get_current_user_id();
+		$current_user_id = get_current_user_id();
+		$other_sellers   = self::get_other_sellers( $current_user_id );
 
 		$auctions = array(
-			// Live auction with bids.
+			// Live auction with bids - by other seller.
 			array(
 				'title'       => __( 'Vintage Rolex Submariner Watch', 'community-auctions' ),
 				'description' => __( 'Authentic 1985 Rolex Submariner in excellent condition. Complete with original box and papers. This timepiece features the classic black dial and rotating bezel. Perfect for collectors and watch enthusiasts.', 'community-auctions' ),
 				'status'      => 'ca_live',
 				'start_price' => 5000,
 				'current_bid' => 6500,
-				'category'    => 'collectibles',
+				'category'    => 'jewelry',
 				'end_days'    => 3,
+				'seller_id'   => isset( $other_sellers[0] ) ? $other_sellers[0] : $current_user_id,
 				'image_url'   => 'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=800&q=80',
 				'image_name'  => 'vintage-rolex-watch.jpg',
 			),
-			// Live auction no bids.
+			// Live auction no bids - current user is seller.
 			array(
 				'title'       => __( 'Sony PlayStation 5 Digital Edition', 'community-auctions' ),
 				'description' => __( 'Brand new, sealed PlayStation 5 Digital Edition console. Includes DualSense controller. Perfect condition, never opened. Fast shipping available.', 'community-auctions' ),
@@ -310,10 +333,38 @@ class Community_Auctions_Demo_Data {
 				'current_bid' => null,
 				'category'    => 'electronics',
 				'end_days'    => 5,
+				'seller_id'   => $current_user_id,
 				'image_url'   => 'https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=800&q=80',
 				'image_name'  => 'playstation-5-console.jpg',
 			),
-			// Upcoming auction.
+			// ENDING SOON auction - tests urgency countdown.
+			array(
+				'title'       => __( 'Limited Edition Sneakers - Nike Air Jordan', 'community-auctions' ),
+				'description' => __( 'Brand new Nike Air Jordan 1 Retro High OG. Size 10 US. Limited edition colorway, never worn. Includes original box and authentication certificate. Hurry - auction ending soon!', 'community-auctions' ),
+				'status'      => 'ca_live',
+				'start_price' => 200,
+				'current_bid' => 450,
+				'category'    => 'collectibles',
+				'end_minutes' => 45, // Ends in 45 minutes - urgency testing.
+				'seller_id'   => isset( $other_sellers[1] ) ? $other_sellers[1] : $current_user_id,
+				'image_url'   => 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80',
+				'image_name'  => 'nike-sneakers.jpg',
+			),
+			// BUY NOW auction - tests instant purchase.
+			array(
+				'title'       => __( 'Apple MacBook Pro M3 - Brand New', 'community-auctions' ),
+				'description' => __( 'Brand new Apple MacBook Pro with M3 chip, 16GB RAM, 512GB SSD. Factory sealed with Apple warranty. Buy it now for instant purchase or place a bid to try and get it cheaper!', 'community-auctions' ),
+				'status'      => 'ca_live',
+				'start_price' => 1500,
+				'current_bid' => 1650,
+				'buy_now'     => 2200, // Buy it now price.
+				'category'    => 'electronics',
+				'end_days'    => 4,
+				'seller_id'   => isset( $other_sellers[0] ) ? $other_sellers[0] : $current_user_id,
+				'image_url'   => 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&q=80',
+				'image_name'  => 'macbook-pro.jpg',
+			),
+			// Upcoming auction - starts in 2 days.
 			array(
 				'title'       => __( 'Original Oil Painting - Sunset Coast', 'community-auctions' ),
 				'description' => __( 'Beautiful original oil painting by local artist. Size: 24x36 inches. Features a stunning coastal sunset scene with vibrant colors. Certificate of authenticity included.', 'community-auctions' ),
@@ -323,10 +374,11 @@ class Community_Auctions_Demo_Data {
 				'category'    => 'art-antiques',
 				'start_days'  => 2,
 				'end_days'    => 9,
+				'seller_id'   => $current_user_id,
 				'image_url'   => 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=800&q=80',
 				'image_name'  => 'sunset-oil-painting.jpg',
 			),
-			// Ended auction with winner.
+			// Ended auction with winner - current user won (for buyer dashboard testing).
 			array(
 				'title'       => __( 'Rare Comic Book Collection', 'community-auctions' ),
 				'description' => __( 'Collection of 25 vintage comic books from the 1960s-1970s. Includes first appearances and key issues. All graded and slabbed by CGC.', 'community-auctions' ),
@@ -336,8 +388,24 @@ class Community_Auctions_Demo_Data {
 				'category'    => 'collectibles',
 				'end_days'    => -2,
 				'has_winner'  => true,
+				'winner_id'   => $current_user_id, // Current user is the winner.
+				'seller_id'   => isset( $other_sellers[0] ) ? $other_sellers[0] : $current_user_id,
 				'image_url'   => 'https://images.unsplash.com/photo-1612036782180-6f0b6cd846fe?w=800&q=80',
 				'image_name'  => 'comic-book-collection.jpg',
+			),
+			// Ended auction with winner - current user is seller (for seller dashboard testing).
+			array(
+				'title'       => __( 'Diamond Engagement Ring - 1.5 Carat', 'community-auctions' ),
+				'description' => __( 'Stunning 1.5 carat diamond engagement ring in 18k white gold setting. VS1 clarity, G color. Includes GIA certification and original case. A perfect symbol of love.', 'community-auctions' ),
+				'status'      => 'ca_ended',
+				'start_price' => 3000,
+				'current_bid' => 4500,
+				'category'    => 'jewelry',
+				'end_days'    => -1,
+				'has_winner'  => true,
+				'seller_id'   => $current_user_id, // Current user is seller.
+				'image_url'   => 'https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=800&q=80',
+				'image_name'  => 'diamond-ring.jpg',
 			),
 			// Ended auction no bids.
 			array(
@@ -349,6 +417,7 @@ class Community_Auctions_Demo_Data {
 				'category'    => 'art-antiques',
 				'end_days'    => -5,
 				'has_winner'  => false,
+				'seller_id'   => isset( $other_sellers[1] ) ? $other_sellers[1] : $current_user_id,
 				'image_url'   => 'https://images.unsplash.com/photo-1465101162946-4377e57745c3?w=800&q=80',
 				'image_name'  => 'antique-telescope.jpg',
 			),
@@ -363,7 +432,16 @@ class Community_Auctions_Demo_Data {
 			$end_days   = isset( $auction['end_days'] ) ? $auction['end_days'] : 7;
 
 			$start_at = gmdate( 'Y-m-d H:i:s', $now + ( $start_days * DAY_IN_SECONDS ) );
-			$end_at   = gmdate( 'Y-m-d H:i:s', $now + ( $end_days * DAY_IN_SECONDS ) );
+
+			// Handle "end_minutes" for urgency testing (ending soon auctions).
+			if ( isset( $auction['end_minutes'] ) ) {
+				$end_at = gmdate( 'Y-m-d H:i:s', $now + ( $auction['end_minutes'] * MINUTE_IN_SECONDS ) );
+			} else {
+				$end_at = gmdate( 'Y-m-d H:i:s', $now + ( $end_days * DAY_IN_SECONDS ) );
+			}
+
+			// Determine seller ID.
+			$seller_id = isset( $auction['seller_id'] ) ? $auction['seller_id'] : $current_user_id;
 
 			// Create post.
 			$post_id = wp_insert_post(
@@ -372,7 +450,7 @@ class Community_Auctions_Demo_Data {
 					'post_content' => $auction['description'],
 					'post_status'  => $auction['status'],
 					'post_type'    => 'auction',
-					'post_author'  => $user_id,
+					'post_author'  => $seller_id,
 				)
 			);
 
@@ -388,9 +466,16 @@ class Community_Auctions_Demo_Data {
 					update_post_meta( $post_id, 'ca_current_bid', $auction['current_bid'] );
 				}
 
+				// Set Buy Now price if specified.
+				if ( ! empty( $auction['buy_now'] ) ) {
+					update_post_meta( $post_id, 'ca_buy_now_price', $auction['buy_now'] );
+					update_post_meta( $post_id, 'ca_buy_now_enabled', true );
+				}
+
 				// Set winner for ended auctions.
 				if ( ! empty( $auction['has_winner'] ) && $auction['current_bid'] ) {
-					$winner = self::get_random_user();
+					// Use specified winner_id or get a random user.
+					$winner = isset( $auction['winner_id'] ) ? $auction['winner_id'] : self::get_random_user( $seller_id );
 					if ( $winner ) {
 						update_post_meta( $post_id, 'ca_winner_id', $winner );
 						update_post_meta( $post_id, 'ca_highest_bidder', $winner );
@@ -416,6 +501,9 @@ class Community_Auctions_Demo_Data {
 					'status'      => $auction['status'],
 					'current_bid' => $auction['current_bid'],
 					'start_price' => $auction['start_price'],
+					'has_winner'  => ! empty( $auction['has_winner'] ),
+					'winner_id'   => isset( $auction['winner_id'] ) ? $auction['winner_id'] : null,
+					'seller_id'   => $seller_id,
 				);
 			}
 		}
@@ -424,19 +512,27 @@ class Community_Auctions_Demo_Data {
 	}
 
 	/**
-	 * Create sample bids on live auctions.
+	 * Create sample bids on auctions (live and ended with bids).
 	 *
 	 * @param array $auctions Auction data.
 	 */
 	private static function create_bids( $auctions ) {
 		foreach ( $auctions as $auction ) {
-			if ( 'ca_live' !== $auction['status'] || ! $auction['current_bid'] ) {
+			// Skip auctions without bids.
+			if ( ! $auction['current_bid'] ) {
+				continue;
+			}
+
+			// Only process live and ended auctions.
+			if ( 'ca_live' !== $auction['status'] && 'ca_ended' !== $auction['status'] ) {
 				continue;
 			}
 
 			$auction_id   = $auction['id'];
 			$current_bid  = $auction['current_bid'];
 			$start_price  = $auction['start_price'];
+			$seller_id    = isset( $auction['seller_id'] ) ? $auction['seller_id'] : get_current_user_id();
+			$winner_id    = isset( $auction['winner_id'] ) ? $auction['winner_id'] : null;
 
 			// Calculate intermediate bids.
 			$bid_amounts = array(
@@ -454,9 +550,23 @@ class Community_Auctions_Demo_Data {
 			$bid_amounts = array_unique( $bid_amounts );
 			sort( $bid_amounts );
 
+			// Get available bidders (excluding seller).
+			$bidders = self::get_bidders_for_auction( $seller_id, $winner_id );
+
 			// Insert bids.
-			foreach ( $bid_amounts as $amount ) {
-				$bidder_id = self::get_random_user();
+			$bidder_index = 0;
+			$total_bidders = count( $bidders );
+
+			foreach ( $bid_amounts as $index => $amount ) {
+				// For the last (highest) bid, use the winner if specified.
+				if ( $index === count( $bid_amounts ) - 1 && $winner_id ) {
+					$bidder_id = $winner_id;
+				} else {
+					// Alternate between bidders for realistic bid history.
+					$bidder_id = $total_bidders > 0 ? $bidders[ $bidder_index % $total_bidders ] : null;
+					++$bidder_index;
+				}
+
 				if ( ! $bidder_id ) {
 					continue;
 				}
@@ -471,6 +581,10 @@ class Community_Auctions_Demo_Data {
 			// Update bid count.
 			$bid_count = Community_Auctions_Bid_Repository::count_auction_bids( $auction_id );
 			update_post_meta( $auction_id, 'ca_bid_count', $bid_count );
+
+			// Update unique bidders count.
+			$unique_bidders = Community_Auctions_Bid_Repository::count_unique_bidders( $auction_id );
+			update_post_meta( $auction_id, 'ca_unique_bidders', $unique_bidders );
 
 			// Set highest bidder.
 			$highest = Community_Auctions_Bid_Repository::get_highest_bid( $auction_id );
@@ -657,11 +771,130 @@ class Community_Auctions_Demo_Data {
 	}
 
 	/**
+	 * Create WooCommerce orders for won auctions.
+	 *
+	 * @param array $auctions Auction data.
+	 */
+	private static function create_woocommerce_orders( $auctions ) {
+		// Check if WooCommerce is available.
+		if ( ! Community_Auctions_Payment_WooCommerce::is_available() ) {
+			return;
+		}
+
+		foreach ( $auctions as $auction ) {
+			// Only process ended auctions with winners.
+			if ( 'ca_ended' !== $auction['status'] || ! $auction['has_winner'] ) {
+				continue;
+			}
+
+			$auction_id = $auction['id'];
+			$winner_id  = get_post_meta( $auction_id, 'ca_winner_id', true );
+			$amount     = $auction['current_bid'];
+
+			if ( ! $winner_id || ! $amount ) {
+				continue;
+			}
+
+			// Create WooCommerce order.
+			$order = Community_Auctions_Payment_WooCommerce::create_order_for_auction(
+				$auction_id,
+				$winner_id,
+				$amount,
+				0 // No fee for demo.
+			);
+
+			if ( ! is_wp_error( $order ) && $order ) {
+				// Store order ID on auction.
+				update_post_meta( $auction_id, 'ca_order_id', $order->get_id() );
+				update_post_meta( $auction_id, 'ca_payment_provider', 'woocommerce' );
+
+				// Mark order as demo data.
+				$order->update_meta_data( '_ca_demo', true );
+				$order->save();
+			}
+		}
+	}
+
+	/**
+	 * Create watchlist entries for testing.
+	 *
+	 * @param array $auctions Auction data.
+	 */
+	private static function create_watchlist_entries( $auctions ) {
+		$current_user_id = get_current_user_id();
+
+		if ( ! $current_user_id ) {
+			return;
+		}
+
+		// Add some live and upcoming auctions to current user's watchlist.
+		foreach ( $auctions as $auction ) {
+			// Only watch live and pending (upcoming) auctions not created by current user.
+			if ( ! in_array( $auction['status'], array( 'ca_live', 'ca_pending' ), true ) ) {
+				continue;
+			}
+
+			// Skip if current user is the seller.
+			if ( isset( $auction['seller_id'] ) && $auction['seller_id'] === $current_user_id ) {
+				continue;
+			}
+
+			// Add to watchlist.
+			Community_Auctions_Watchlist::add_to_watchlist( $current_user_id, $auction['id'] );
+		}
+	}
+
+	/**
+	 * Get other users to act as sellers (excluding current user).
+	 *
+	 * @param int $exclude_user_id User ID to exclude.
+	 * @return array Array of user IDs.
+	 */
+	private static function get_other_sellers( $exclude_user_id ) {
+		$users = get_users(
+			array(
+				'fields'  => 'ID',
+				'number'  => 5,
+				'exclude' => array( $exclude_user_id ),
+			)
+		);
+
+		return $users;
+	}
+
+	/**
+	 * Get bidders for an auction (excluding seller and optionally prioritizing winner).
+	 *
+	 * @param int      $seller_id Seller user ID to exclude.
+	 * @param int|null $winner_id Winner user ID (will be included in the list).
+	 * @return array Array of user IDs.
+	 */
+	private static function get_bidders_for_auction( $seller_id, $winner_id = null ) {
+		$exclude = array( $seller_id );
+
+		$users = get_users(
+			array(
+				'fields'  => 'ID',
+				'number'  => 10,
+				'exclude' => $exclude,
+			)
+		);
+
+		// Ensure winner is in the list if specified.
+		if ( $winner_id && ! in_array( $winner_id, $users, true ) ) {
+			$users[] = $winner_id;
+		}
+
+		return $users;
+	}
+
+	/**
 	 * Get a random user ID for bids.
 	 *
+	 * @param int $exclude_user_id Optional user ID to exclude (e.g., seller).
 	 * @return int|false User ID or false.
 	 */
-	private static function get_random_user() {
+	private static function get_random_user( $exclude_user_id = 0 ) {
 		static $users = null;
 
 		if ( null === $users ) {
@@ -677,7 +910,20 @@ class Community_Auctions_Demo_Data {
 			return false;
 		}
 
-		return $users[ array_rand( $users ) ];
+		// Filter out excluded user.
+		$available_users = $users;
+		if ( $exclude_user_id ) {
+			$available_users = array_filter( $users, function ( $uid ) use ( $exclude_user_id ) {
+				return absint( $uid ) !== absint( $exclude_user_id );
+			} );
+			$available_users = array_values( $available_users );
+		}
+
+		if ( empty( $available_users ) ) {
+			return false;
+		}
+
+		return $available_users[ array_rand( $available_users ) ];
 	}
 
 	/**
@@ -749,8 +995,27 @@ class Community_Auctions_Demo_Data {
 			$table = $wpdb->prefix . 'ca_bids';
 			$wpdb->delete( $table, array( 'auction_id' => $auction_id ) );
 
+			// Delete watchlist entries for this auction.
+			$watchlist_table = $wpdb->prefix . 'ca_watchlist';
+			$wpdb->delete( $watchlist_table, array( 'auction_id' => $auction_id ) );
+
 			// Delete auction.
 			wp_delete_post( $auction_id, true );
+		}
+
+		// Remove demo WooCommerce orders.
+		if ( class_exists( 'WooCommerce' ) ) {
+			$demo_orders = wc_get_orders(
+				array(
+					'limit'      => 100,
+					'meta_key'   => '_ca_demo',
+					'meta_value' => '1',
+				)
+			);
+
+			foreach ( $demo_orders as $order ) {
+				$order->delete( true );
+			}
 		}
 
 		// Remove demo pages.
