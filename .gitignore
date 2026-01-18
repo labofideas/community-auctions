@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Build artifacts
+*.log
+*.cache
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.sublime-*
+
+# Local config
+.env
+*.local
+
+# WordPress
+wp-config.php

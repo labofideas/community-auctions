@@ -1,0 +1,49 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "community-auctions/countdown-timer",
+  "version": "0.1.0",
+  "title": "Auction Countdown",
+  "category": "widgets",
+  "icon": "clock",
+  "description": "Display a countdown timer for an auction.",
+  "keywords": [
+    "auction",
+    "countdown",
+    "timer",
+    "clock"
+  ],
+  "supports": {
+    "html": false,
+    "align": true
+  },
+  "attributes": {
+    "auctionId": {
+      "type": "number",
+      "default": 0
+    },
+    "style": {
+      "type": "string",
+      "default": "default"
+    },
+    "showLabels": {
+      "type": "boolean",
+      "default": true
+    },
+    "showSeconds": {
+      "type": "boolean",
+      "default": true
+    },
+    "endedText": {
+      "type": "string",
+      "default": "Auction Ended"
+    },
+    "urgentThreshold": {
+      "type": "number",
+      "default": 60
+    }
+  },
+  "textdomain": "community-auctions",
+  "viewScript": "file:../../build/countdown-view.js",
+  "render": "file:./render.php"
+}

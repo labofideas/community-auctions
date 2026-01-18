@@ -1,0 +1,25 @@
+{
+  "name": "community-auctions",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Community Auctions WordPress Plugin",
+  "scripts": {
+    "build": "wp-scripts build",
+    "start": "wp-scripts start",
+    "test:e2e": "playwright test",
+    "packages-update": "wp-scripts packages-update"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.46.0",
+    "@wordpress/scripts": "^28.0.0"
+  },
+  "dependencies": {
+    "@wordpress/api-fetch": "^7.0.0",
+    "@wordpress/block-editor": "^13.0.0",
+    "@wordpress/blocks": "^13.0.0",
+    "@wordpress/components": "^28.0.0",
+    "@wordpress/element": "^6.0.0",
+    "@wordpress/i18n": "^5.0.0",
+    "@wordpress/server-side-render": "^5.0.0"
+  }
+}

@@ -1,0 +1,241 @@
+/**
+ * Countdown Timer Block - Frontend Styles
+ */
+
+.ca-countdown-block {
+	display: inline-block;
+	padding: 16px 24px;
+	background: #f7f7f7;
+	border-radius: 8px;
+	text-align: center;
+}
+
+/* Default Style */
+.ca-countdown-style-default .ca-countdown-units {
+	display: flex;
+	gap: 16px;
+	justify-content: center;
+}
+
+.ca-countdown-style-default .ca-countdown-unit {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	min-width: 60px;
+}
+
+.ca-countdown-style-default .ca-countdown-value {
+	font-size: 32px;
+	font-weight: 700;
+	line-height: 1;
+	color: #333;
+}
+
+.ca-countdown-style-default .ca-countdown-label {
+	font-size: 12px;
+	color: #666;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	margin-top: 4px;
+}
+
+/* Compact Style */
+.ca-countdown-style-compact {
+	padding: 8px 16px;
+}
+
+.ca-countdown-style-compact .ca-countdown-units {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+
+.ca-countdown-style-compact .ca-countdown-unit {
+	display: flex;
+	align-items: baseline;
+	gap: 2px;
+}
+
+.ca-countdown-style-compact .ca-countdown-value {
+	font-size: 16px;
+	font-weight: 700;
+}
+
+.ca-countdown-style-compact .ca-countdown-label {
+	font-size: 11px;
+	color: #666;
+}
+
+/* Large Style */
+.ca-countdown-style-large {
+	padding: 32px 48px;
+	background: linear-gradient(135deg, #0073aa 0%, #005a87 100%);
+	color: #fff;
+}
+
+.ca-countdown-style-large .ca-countdown-units {
+	display: flex;
+	gap: 24px;
+	justify-content: center;
+}
+
+.ca-countdown-style-large .ca-countdown-unit {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	min-width: 80px;
+	padding: 16px;
+	background: rgba(255, 255, 255, 0.1);
+	border-radius: 8px;
+}
+
+.ca-countdown-style-large .ca-countdown-value {
+	font-size: 48px;
+	font-weight: 700;
+	line-height: 1;
+}
+
+.ca-countdown-style-large .ca-countdown-label {
+	font-size: 14px;
+	opacity: 0.8;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	margin-top: 8px;
+}
+
+/* Minimal Style */
+.ca-countdown-style-minimal {
+	padding: 0;
+	background: transparent;
+}
+
+.ca-countdown-style-minimal .ca-countdown-units {
+	display: flex;
+	gap: 4px;
+	align-items: center;
+}
+
+.ca-countdown-style-minimal .ca-countdown-unit::after {
+	content: ':';
+	margin-left: 4px;
+	font-weight: 700;
+}
+
+.ca-countdown-style-minimal .ca-countdown-unit:last-child::after {
+	content: '';
+}
+
+.ca-countdown-style-minimal .ca-countdown-value {
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.ca-countdown-style-minimal .ca-countdown-label {
+	display: none;
+}
+
+/* Urgency States */
+.ca-countdown-urgent {
+	background: #fff3cd;
+	border: 2px solid #ffc107;
+}
+
+.ca-countdown-urgent .ca-countdown-value {
+	color: #856404;
+}
+
+.ca-countdown-style-large.ca-countdown-urgent {
+	background: linear-gradient(135deg, #d39e00 0%, #a07800 100%);
+	border: none;
+}
+
+.ca-countdown-style-large.ca-countdown-urgent .ca-countdown-value {
+	color: #fff;
+}
+
+.ca-countdown-critical {
+	background: #f8d7da;
+	border: 2px solid #dc3545;
+	animation: pulse 1s ease-in-out infinite;
+}
+
+.ca-countdown-critical .ca-countdown-value {
+	color: #721c24;
+}
+
+.ca-countdown-style-large.ca-countdown-critical {
+	background: linear-gradient(135deg, #dc3545 0%, #bd2130 100%);
+	border: none;
+}
+
+.ca-countdown-style-large.ca-countdown-critical .ca-countdown-value {
+	color: #fff;
+}
+
+@keyframes pulse {
+	0%, 100% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(1.02);
+	}
+}
+
+/* Ended State */
+.ca-countdown-ended {
+	background: #e9ecef;
+	border: 1px solid #ced4da;
+}
+
+.ca-countdown-ended-text {
+	font-size: 18px;
+	font-weight: 600;
+	color: #6c757d;
+}
+
+.ca-countdown-style-large.ca-countdown-ended {
+	background: linear-gradient(135deg, #6c757d 0%, #545b62 100%);
+}
+
+.ca-countdown-style-large .ca-countdown-ended-text {
+	color: #fff;
+	font-size: 24px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+	.ca-countdown-style-large {
+		padding: 20px 24px;
+	}
+
+	.ca-countdown-style-large .ca-countdown-units {
+		gap: 12px;
+	}
+
+	.ca-countdown-style-large .ca-countdown-unit {
+		min-width: 60px;
+		padding: 12px;
+	}
+
+	.ca-countdown-style-large .ca-countdown-value {
+		font-size: 32px;
+	}
+}
+
+@media (max-width: 480px) {
+	.ca-countdown-style-default .ca-countdown-units {
+		gap: 12px;
+	}
+
+	.ca-countdown-style-default .ca-countdown-value {
+		font-size: 24px;
+	}
+
+	.ca-countdown-style-large .ca-countdown-units {
+		flex-wrap: wrap;
+	}
+
+	.ca-countdown-style-large .ca-countdown-unit {
+		flex: 0 0 calc(50% - 6px);
+	}
+}

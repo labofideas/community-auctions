@@ -1,0 +1,63 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "community-auctions/single-auction",
+  "version": "0.1.0",
+  "title": "Single Auction",
+  "category": "widgets",
+  "icon": "money-alt",
+  "description": "Display a single auction with bidding interface.",
+  "keywords": [
+    "auction",
+    "bid",
+    "single",
+    "marketplace"
+  ],
+  "supports": {
+    "html": false,
+    "align": [
+      "wide",
+      "full"
+    ]
+  },
+  "attributes": {
+    "auctionId": {
+      "type": "number",
+      "default": 0
+    },
+    "showImage": {
+      "type": "boolean",
+      "default": true
+    },
+    "showGallery": {
+      "type": "boolean",
+      "default": true
+    },
+    "showCountdown": {
+      "type": "boolean",
+      "default": true
+    },
+    "showBidHistory": {
+      "type": "boolean",
+      "default": true
+    },
+    "showBidForm": {
+      "type": "boolean",
+      "default": true
+    },
+    "showSellerInfo": {
+      "type": "boolean",
+      "default": true
+    },
+    "showCategory": {
+      "type": "boolean",
+      "default": true
+    },
+    "showBuyNow": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "textdomain": "community-auctions",
+  "render": "file:./render.php"
+}

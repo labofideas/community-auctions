@@ -1,0 +1,349 @@
+/**
+ * Community Auctions - Admin Meta Box Styles
+ * Modern styling for the auction editor in WordPress admin
+ */
+
+/* Variables - Match frontend form colors */
+:root {
+	--ca-admin-primary: #2563eb;
+	--ca-admin-primary-hover: #1d4ed8;
+	--ca-admin-success: #059669;
+	--ca-admin-gray-50: #f9fafb;
+	--ca-admin-gray-100: #f3f4f6;
+	--ca-admin-gray-200: #e5e7eb;
+	--ca-admin-gray-300: #d1d5db;
+	--ca-admin-gray-400: #9ca3af;
+	--ca-admin-gray-500: #6b7280;
+	--ca-admin-gray-600: #4b5563;
+	--ca-admin-gray-700: #374151;
+	--ca-admin-gray-800: #1f2937;
+	--ca-admin-gray-900: #111827;
+}
+
+/* Main Container */
+.ca-admin-meta-box {
+	margin: -6px -12px -12px;
+}
+
+/* Section */
+.ca-meta-section {
+	padding: 20px;
+	border-bottom: 1px solid var(--ca-admin-gray-200);
+}
+
+.ca-meta-section:last-child {
+	border-bottom: none;
+}
+
+/* Section Title */
+.ca-meta-section-title {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--ca-admin-gray-800);
+	margin: 0 0 16px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid var(--ca-admin-gray-100);
+}
+
+.ca-meta-section-title .dashicons {
+	color: var(--ca-admin-primary);
+	font-size: 18px;
+	width: 18px;
+	height: 18px;
+}
+
+/* Row Layout */
+.ca-meta-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+	margin-bottom: 16px;
+}
+
+.ca-meta-row:last-child {
+	margin-bottom: 0;
+}
+
+.ca-meta-row-toggle {
+	background: var(--ca-admin-gray-50);
+	padding: 16px;
+	border-radius: 6px;
+	margin-top: 16px;
+}
+
+/* Field Sizes */
+.ca-meta-field {
+	flex: 1;
+	min-width: 200px;
+}
+
+.ca-meta-field-half {
+	flex: 0 0 calc(50% - 8px);
+	min-width: 200px;
+}
+
+.ca-meta-field-third {
+	flex: 0 0 calc(33.333% - 11px);
+	min-width: 150px;
+}
+
+.ca-meta-field-conditional {
+	margin-top: 12px;
+	padding-top: 12px;
+	border-top: 1px solid var(--ca-admin-gray-200);
+}
+
+/* Labels */
+.ca-meta-label {
+	display: block;
+	font-size: 13px;
+	font-weight: 500;
+	color: var(--ca-admin-gray-700);
+	margin-bottom: 6px;
+}
+
+.ca-meta-optional {
+	font-weight: 400;
+	color: var(--ca-admin-gray-400);
+	font-size: 11px;
+}
+
+/* Inputs */
+.ca-meta-input,
+.ca-meta-select {
+	width: 100%;
+	padding: 8px 12px;
+	font-size: 14px;
+	border: 1px solid var(--ca-admin-gray-300);
+	border-radius: 6px;
+	background: white;
+	color: var(--ca-admin-gray-900);
+	transition: border-color 0.2s, box-shadow 0.2s;
+	box-sizing: border-box;
+}
+
+.ca-meta-input:focus,
+.ca-meta-select:focus {
+	outline: none;
+	border-color: var(--ca-admin-primary);
+	box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.ca-meta-input::placeholder {
+	color: var(--ca-admin-gray-400);
+}
+
+.ca-meta-select {
+	cursor: pointer;
+	appearance: none;
+	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+	background-position: right 8px center;
+	background-repeat: no-repeat;
+	background-size: 20px;
+	padding-right: 36px;
+}
+
+/* Input Group (prefix/suffix) */
+.ca-meta-input-group {
+	display: flex;
+	align-items: stretch;
+}
+
+.ca-meta-input-prefix,
+.ca-meta-input-suffix {
+	display: flex;
+	align-items: center;
+	padding: 0 12px;
+	background: var(--ca-admin-gray-100);
+	border: 1px solid var(--ca-admin-gray-300);
+	color: var(--ca-admin-gray-500);
+	font-size: 14px;
+	font-weight: 500;
+	white-space: nowrap;
+}
+
+.ca-meta-input-prefix {
+	border-right: none;
+	border-radius: 6px 0 0 6px;
+}
+
+.ca-meta-input-suffix {
+	border-left: none;
+	border-radius: 0 6px 6px 0;
+}
+
+.ca-meta-input-group .ca-meta-input {
+	flex: 1;
+}
+
+.ca-meta-input-group .ca-meta-input:first-child {
+	border-radius: 6px 0 0 6px;
+}
+
+.ca-meta-input-group .ca-meta-input-prefix + .ca-meta-input {
+	border-radius: 0 6px 6px 0;
+}
+
+.ca-meta-input-group .ca-meta-input:not(:last-child) {
+	border-radius: 6px 0 0 6px;
+}
+
+.ca-meta-input-currency {
+	border-radius: 0 6px 6px 0;
+}
+
+/* Hint Text */
+.ca-meta-hint {
+	display: block;
+	font-size: 12px;
+	color: var(--ca-admin-gray-500);
+	margin-top: 4px;
+}
+
+.ca-meta-hint-toggle {
+	margin-left: 56px;
+	margin-top: 8px;
+}
+
+/* Toggle Switch */
+.ca-meta-toggle {
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+	user-select: none;
+}
+
+.ca-meta-toggle input[type="checkbox"] {
+	position: absolute;
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+.ca-meta-toggle-slider {
+	width: 44px;
+	height: 24px;
+	background: var(--ca-admin-gray-300);
+	border-radius: 12px;
+	position: relative;
+	transition: background 0.2s;
+	flex-shrink: 0;
+}
+
+.ca-meta-toggle-slider::before {
+	content: "";
+	position: absolute;
+	width: 18px;
+	height: 18px;
+	background: white;
+	border-radius: 50%;
+	top: 3px;
+	left: 3px;
+	transition: transform 0.2s;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.ca-meta-toggle input:checked + .ca-meta-toggle-slider {
+	background: var(--ca-admin-primary);
+}
+
+.ca-meta-toggle input:checked + .ca-meta-toggle-slider::before {
+	transform: translateX(20px);
+}
+
+.ca-meta-toggle input:focus + .ca-meta-toggle-slider {
+	box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+.ca-meta-toggle-label {
+	margin-left: 12px;
+	font-size: 14px;
+	font-weight: 500;
+	color: var(--ca-admin-gray-700);
+}
+
+/* Responsive */
+@media (max-width: 782px) {
+	.ca-meta-field-half,
+	.ca-meta-field-third {
+		flex: 0 0 100%;
+	}
+
+	.ca-meta-row {
+		gap: 12px;
+	}
+
+	.ca-meta-section {
+		padding: 16px;
+	}
+}
+
+/* Override WordPress defaults inside meta box */
+#community_auctions_meta .inside {
+	margin: 0;
+	padding: 0;
+}
+
+#community_auctions_meta .postbox-header {
+	border-bottom: 2px solid var(--ca-admin-primary);
+}
+
+#community_auctions_meta .postbox-header h2 {
+	color: var(--ca-admin-gray-800);
+}
+
+/* Dark mode support (WordPress admin dark mode) */
+@media (prefers-color-scheme: dark) {
+	body.admin-color-modern .ca-admin-meta-box {
+		--ca-admin-gray-50: #1e1e1e;
+		--ca-admin-gray-100: #2d2d2d;
+		--ca-admin-gray-200: #3d3d3d;
+		--ca-admin-gray-300: #4d4d4d;
+		--ca-admin-gray-700: #d1d5db;
+		--ca-admin-gray-800: #e5e7eb;
+		--ca-admin-gray-900: #f3f4f6;
+	}
+
+	body.admin-color-modern .ca-meta-input,
+	body.admin-color-modern .ca-meta-select {
+		background: var(--ca-admin-gray-100);
+		color: var(--ca-admin-gray-900);
+	}
+
+	body.admin-color-modern .ca-meta-input-prefix,
+	body.admin-color-modern .ca-meta-input-suffix {
+		background: var(--ca-admin-gray-200);
+	}
+}
+
+/* Gutenberg Sidebar Styles */
+.ca-sidebar-date-control {
+	width: 100%;
+}
+
+.ca-sidebar-date-button {
+	width: 100%;
+	justify-content: flex-start;
+	text-align: left;
+}
+
+.ca-sidebar-date-button .components-button__icon {
+	margin-right: 8px;
+}
+
+/* Ensure sidebar panels have proper spacing */
+.components-panel__body.is-opened[id*="ca-auction"] .components-panel__row {
+	margin-bottom: 12px;
+}
+
+.components-panel__body.is-opened[id*="ca-auction"] .components-panel__row:last-child {
+	margin-bottom: 0;
+}
+
+/* Style toggle controls in sidebar */
+.components-panel__body[id*="ca-auction"] .components-toggle-control {
+	margin-bottom: 8px;
+}

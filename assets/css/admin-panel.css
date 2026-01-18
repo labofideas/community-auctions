@@ -1,0 +1,466 @@
+/**
+ * Community Auctions - Admin Panel Styles
+ */
+
+/* Header */
+.ca-admin-wrap {
+	margin: 20px 20px 20px 0;
+}
+
+.ca-admin-header {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 20px;
+	padding: 20px;
+	background: linear-gradient(135deg, #1b3b33 0%, #2d5a4e 100%);
+	color: #fff;
+	border-radius: 8px;
+}
+
+.ca-admin-header h1 {
+	margin: 0;
+	padding: 0;
+	color: #fff;
+	font-size: 24px;
+	font-weight: 600;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.ca-admin-header .dashicons {
+	font-size: 28px;
+	width: 28px;
+	height: 28px;
+}
+
+.ca-version {
+	background: rgba(255, 255, 255, 0.2);
+	padding: 4px 10px;
+	border-radius: 4px;
+	font-size: 12px;
+	margin-left: auto;
+}
+
+/* Tabs */
+.ca-admin-tabs {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	margin-bottom: 20px;
+	border-bottom: 2px solid #e1e1e1;
+	padding-bottom: 0;
+}
+
+.ca-tab {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 12px 18px;
+	text-decoration: none;
+	color: #50575e;
+	font-weight: 500;
+	border: 1px solid transparent;
+	border-bottom: none;
+	border-radius: 6px 6px 0 0;
+	background: #f0f0f1;
+	margin-bottom: -2px;
+	transition: all 0.2s ease;
+}
+
+.ca-tab:hover {
+	color: #1b3b33;
+	background: #fff;
+}
+
+.ca-tab-active {
+	background: #fff;
+	color: #1b3b33;
+	border-color: #e1e1e1;
+	border-bottom-color: #fff;
+}
+
+.ca-tab .dashicons {
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
+}
+
+/* Content Area */
+.ca-admin-content {
+	background: #fff;
+	border: 1px solid #e1e1e1;
+	border-radius: 0 8px 8px 8px;
+	padding: 24px;
+}
+
+/* Dashboard Stats */
+.ca-stats-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+	gap: 16px;
+	margin-bottom: 24px;
+}
+
+.ca-stat-card {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	padding: 20px;
+	background: #f8f9fa;
+	border-radius: 8px;
+	border-left: 4px solid #1b3b33;
+}
+
+.ca-stat-live {
+	border-left-color: #2ecc71;
+}
+
+.ca-stat-pending {
+	border-left-color: #f39c12;
+}
+
+.ca-stat-ended {
+	border-left-color: #95a5a6;
+}
+
+.ca-stat-bids {
+	border-left-color: #3498db;
+}
+
+.ca-stat-bidders {
+	border-left-color: #9b59b6;
+}
+
+.ca-stat-payments {
+	border-left-color: #e74c3c;
+}
+
+.ca-stat-icon {
+	width: 48px;
+	height: 48px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: #fff;
+	border-radius: 50%;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.ca-stat-icon .dashicons {
+	font-size: 24px;
+	width: 24px;
+	height: 24px;
+	color: #1b3b33;
+}
+
+.ca-stat-content {
+	display: flex;
+	flex-direction: column;
+}
+
+.ca-stat-number {
+	font-size: 28px;
+	font-weight: 700;
+	color: #1a1a1a;
+	line-height: 1;
+}
+
+.ca-stat-label {
+	font-size: 13px;
+	color: #666;
+	margin-top: 4px;
+}
+
+/* Dashboard Row */
+.ca-dashboard-row {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 20px;
+	margin-bottom: 24px;
+}
+
+@media (max-width: 1024px) {
+	.ca-dashboard-row {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* Dashboard Boxes */
+.ca-dashboard-box {
+	background: #f8f9fa;
+	border-radius: 8px;
+	padding: 20px;
+}
+
+.ca-dashboard-box h3 {
+	margin: 0 0 16px;
+	font-size: 16px;
+	font-weight: 600;
+	color: #1a1a1a;
+}
+
+/* Quick Actions */
+.ca-actions-list {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 10px;
+}
+
+.ca-action-btn {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 12px 16px;
+	background: #fff;
+	border: 1px solid #e1e1e1;
+	border-radius: 6px;
+	text-decoration: none;
+	color: #1a1a1a;
+	font-weight: 500;
+	transition: all 0.2s ease;
+}
+
+.ca-action-btn:hover {
+	background: #1b3b33;
+	border-color: #1b3b33;
+	color: #fff;
+}
+
+.ca-action-btn .dashicons {
+	font-size: 18px;
+	width: 18px;
+	height: 18px;
+}
+
+/* System Status */
+.ca-status-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.ca-status-table td {
+	padding: 10px 0;
+	border-bottom: 1px solid #e1e1e1;
+}
+
+.ca-status-table td:first-child {
+	font-weight: 500;
+	color: #666;
+}
+
+.ca-status-table td:last-child {
+	text-align: right;
+}
+
+.ca-status-yes {
+	color: #2ecc71;
+	font-weight: 600;
+}
+
+.ca-status-no {
+	color: #95a5a6;
+}
+
+/* Recent Auctions */
+.ca-recent-auctions .wp-list-table {
+	margin-top: 0;
+}
+
+/* Settings Form */
+.ca-settings-form {
+	max-width: 800px;
+}
+
+.ca-settings-section {
+	margin-bottom: 32px;
+	padding-bottom: 24px;
+	border-bottom: 1px solid #e1e1e1;
+}
+
+.ca-settings-section:last-child {
+	border-bottom: none;
+	margin-bottom: 0;
+}
+
+.ca-settings-section h2 {
+	font-size: 18px;
+	font-weight: 600;
+	color: #1a1a1a;
+	margin: 0 0 8px;
+}
+
+.ca-section-desc {
+	color: #666;
+	margin: 0 0 16px;
+}
+
+.ca-settings-section .form-table {
+	margin-top: 0;
+}
+
+.ca-settings-section .form-table th {
+	padding: 16px 10px 16px 0;
+	width: 200px;
+	font-weight: 500;
+}
+
+.ca-settings-section .form-table td {
+	padding: 16px 0;
+}
+
+/* Roles Grid */
+.ca-roles-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+	gap: 8px;
+}
+
+.ca-role-checkbox {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 8px 12px;
+	background: #f8f9fa;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: background 0.2s ease;
+}
+
+.ca-role-checkbox:hover {
+	background: #e8e8e8;
+}
+
+.ca-role-checkbox input {
+	margin: 0;
+}
+
+/* Notices */
+.ca-notice {
+	padding: 12px 16px;
+	border-radius: 6px;
+	margin-bottom: 16px;
+}
+
+.ca-notice-warning {
+	background: #fff3cd;
+	border-left: 4px solid #f39c12;
+}
+
+.ca-notice p {
+	margin: 0;
+}
+
+/* Templates Table */
+.ca-templates-table code {
+	background: #f0f0f1;
+	padding: 2px 6px;
+	border-radius: 3px;
+}
+
+/* Currency Preview */
+.ca-currency-preview {
+	font-size: 18px;
+	padding: 16px;
+	background: #f8f9fa;
+	border-radius: 6px;
+	display: inline-block;
+}
+
+/* Advanced Tab */
+#ca-clear-cache,
+#ca-recalculate-counters {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+}
+
+#ca-clear-cache .dashicons,
+#ca-recalculate-counters .dashicons {
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
+}
+
+/* Submit Button */
+.ca-settings-form .submit {
+	margin-top: 24px;
+	padding-top: 24px;
+	border-top: 1px solid #e1e1e1;
+}
+
+.ca-settings-form input[type="submit"] {
+	background: #1b3b33;
+	border-color: #1b3b33;
+	color: #fff;
+	padding: 8px 24px;
+	height: auto;
+	font-size: 14px;
+}
+
+.ca-settings-form input[type="submit"]:hover {
+	background: #2d5a4e;
+	border-color: #2d5a4e;
+}
+
+/* Input Styles */
+.ca-settings-form input[type="text"],
+.ca-settings-form input[type="email"],
+.ca-settings-form input[type="number"],
+.ca-settings-form select,
+.ca-settings-form textarea {
+	border-color: #d1d1d1;
+	border-radius: 4px;
+}
+
+.ca-settings-form input[type="text"]:focus,
+.ca-settings-form input[type="email"]:focus,
+.ca-settings-form input[type="number"]:focus,
+.ca-settings-form select:focus,
+.ca-settings-form textarea:focus {
+	border-color: #1b3b33;
+	box-shadow: 0 0 0 1px #1b3b33;
+}
+
+/* Responsive */
+@media (max-width: 782px) {
+	.ca-admin-header {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 8px;
+	}
+
+	.ca-version {
+		margin-left: 0;
+	}
+
+	.ca-admin-tabs {
+		flex-direction: column;
+		gap: 2px;
+	}
+
+	.ca-tab {
+		border-radius: 4px;
+		margin-bottom: 0;
+	}
+
+	.ca-stats-grid {
+		grid-template-columns: 1fr 1fr;
+	}
+
+	.ca-actions-list {
+		grid-template-columns: 1fr;
+	}
+
+	.ca-settings-section .form-table th {
+		width: auto;
+		display: block;
+		padding-bottom: 4px;
+	}
+
+	.ca-settings-section .form-table td {
+		display: block;
+		padding-top: 0;
+	}
+}

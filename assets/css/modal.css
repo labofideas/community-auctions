@@ -1,0 +1,264 @@
+/**
+ * Community Auctions - Bid Confirmation Modal Styles
+ */
+
+/* Modal Container */
+.ca-modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 100000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+	visibility: hidden;
+	opacity: 0;
+	transition: visibility 0s 0.3s, opacity 0.3s ease;
+}
+
+.ca-modal--open {
+	visibility: visible;
+	opacity: 1;
+	transition: visibility 0s, opacity 0.3s ease;
+}
+
+/* Overlay */
+.ca-modal-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.6);
+	backdrop-filter: blur(4px);
+}
+
+/* Content */
+.ca-modal-content {
+	position: relative;
+	width: 100%;
+	max-width: 420px;
+	max-height: 90vh;
+	overflow-y: auto;
+	background: #fff;
+	border-radius: 12px;
+	box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+	transform: translateY(20px);
+	transition: transform 0.3s ease;
+}
+
+.ca-modal--open .ca-modal-content {
+	transform: translateY(0);
+}
+
+/* Header */
+.ca-modal-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 16px 20px;
+	border-bottom: 1px solid #eee;
+}
+
+.ca-modal-header h3 {
+	margin: 0;
+	font-size: 18px;
+	font-weight: 600;
+	color: #1a1a1a;
+}
+
+.ca-modal-close {
+	width: 32px;
+	height: 32px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	border: none;
+	background: transparent;
+	font-size: 24px;
+	color: #666;
+	cursor: pointer;
+	border-radius: 50%;
+	transition: background-color 0.2s, color 0.2s;
+}
+
+.ca-modal-close:hover,
+.ca-modal-close:focus {
+	background: #f5f5f5;
+	color: #333;
+}
+
+/* Body */
+.ca-modal-body {
+	padding: 20px;
+}
+
+.ca-modal-prompt {
+	margin: 0 0 20px;
+	font-size: 14px;
+	color: #666;
+}
+
+/* Details List */
+.ca-modal-details {
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.ca-modal-detail {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px 12px;
+	background: #f8f8f8;
+	border-radius: 6px;
+}
+
+.ca-modal-detail dt {
+	font-size: 13px;
+	color: #666;
+	font-weight: 500;
+}
+
+.ca-modal-detail dd {
+	margin: 0;
+	font-size: 15px;
+	font-weight: 600;
+	color: #333;
+}
+
+.ca-modal-detail--highlight {
+	background: rgba(27, 59, 51, 0.08);
+	border: 1px solid rgba(27, 59, 51, 0.15);
+}
+
+.ca-modal-detail--highlight dd {
+	color: #1b3b33;
+	font-size: 18px;
+}
+
+.ca-modal-detail--proxy {
+	background: rgba(224, 183, 108, 0.15);
+	border: 1px solid rgba(224, 183, 108, 0.3);
+}
+
+/* Notice */
+.ca-modal-notice {
+	margin: 20px 0 0;
+	padding: 12px;
+	background: #fff8e1;
+	border-radius: 6px;
+	font-size: 12px;
+	color: #8a6914;
+	line-height: 1.5;
+}
+
+/* Footer */
+.ca-modal-footer {
+	display: flex;
+	gap: 12px;
+	padding: 16px 20px;
+	border-top: 1px solid #eee;
+}
+
+.ca-modal-btn {
+	flex: 1;
+	padding: 12px 20px;
+	border: none;
+	border-radius: 8px;
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background-color 0.2s, transform 0.1s;
+}
+
+.ca-modal-btn:active {
+	transform: scale(0.98);
+}
+
+.ca-modal-btn--cancel {
+	background: #f0f0f0;
+	color: #666;
+}
+
+.ca-modal-btn--cancel:hover,
+.ca-modal-btn--cancel:focus {
+	background: #e0e0e0;
+}
+
+.ca-modal-btn--confirm {
+	background: #1b3b33;
+	color: #fff;
+}
+
+.ca-modal-btn--confirm:hover,
+.ca-modal-btn--confirm:focus {
+	background: #2a5548;
+}
+
+/* Loading State */
+.ca-modal-loading {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	padding: 20px;
+	font-size: 14px;
+	color: #666;
+}
+
+.ca-modal-spinner {
+	width: 20px;
+	height: 20px;
+	border: 2px solid #e0e0e0;
+	border-top-color: #1b3b33;
+	border-radius: 50%;
+	animation: ca-spin 0.8s linear infinite;
+}
+
+@keyframes ca-spin {
+	to { transform: rotate(360deg); }
+}
+
+/* Body scroll lock */
+body.ca-modal-open {
+	overflow: hidden;
+}
+
+/* Bid Message States */
+.ca-bid-message--success {
+	color: #2f6f44;
+}
+
+.ca-bid-message--error {
+	color: #c65a1e;
+}
+
+/* Focus visible */
+.ca-modal-btn:focus-visible,
+.ca-modal-close:focus-visible {
+	outline: 2px solid #1b3b33;
+	outline-offset: 2px;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+	.ca-modal {
+		padding: 10px;
+	}
+
+	.ca-modal-content {
+		max-height: 95vh;
+	}
+
+	.ca-modal-footer {
+		flex-direction: column;
+	}
+}

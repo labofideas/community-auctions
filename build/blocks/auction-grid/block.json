@@ -1,0 +1,75 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "community-auctions/auction-grid",
+  "version": "0.1.0",
+  "title": "Auction Grid",
+  "category": "widgets",
+  "icon": "grid-view",
+  "description": "Display a grid or list of auctions with filtering options.",
+  "keywords": [
+    "auction",
+    "grid",
+    "list",
+    "marketplace"
+  ],
+  "supports": {
+    "html": false,
+    "align": [
+      "wide",
+      "full"
+    ]
+  },
+  "attributes": {
+    "columns": {
+      "type": "number",
+      "default": 3
+    },
+    "postsPerPage": {
+      "type": "number",
+      "default": 6
+    },
+    "layout": {
+      "type": "string",
+      "default": "grid"
+    },
+    "status": {
+      "type": "string",
+      "default": "live"
+    },
+    "category": {
+      "type": "number",
+      "default": 0
+    },
+    "orderBy": {
+      "type": "string",
+      "default": "date"
+    },
+    "order": {
+      "type": "string",
+      "default": "DESC"
+    },
+    "showCountdown": {
+      "type": "boolean",
+      "default": true
+    },
+    "showBidCount": {
+      "type": "boolean",
+      "default": true
+    },
+    "showCurrentBid": {
+      "type": "boolean",
+      "default": true
+    },
+    "showImage": {
+      "type": "boolean",
+      "default": true
+    },
+    "showCategory": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "textdomain": "community-auctions",
+  "render": "file:./render.php"
+}
