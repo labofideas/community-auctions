@@ -553,7 +553,8 @@ class Community_Auctions_Auction_CPT {
             return;
         }
 
-        $selected = isset( $_GET['ca_visibility'] ) ? sanitize_text_field( wp_unslash( $_GET['ca_visibility'] ) ) : '';
+        $selected = (string) filter_input( INPUT_GET, 'ca_visibility', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+        $selected = sanitize_text_field( wp_unslash( $selected ) );
         ?>
         <select name="ca_visibility">
             <option value=""><?php esc_html_e( 'All Visibilities', 'community-auctions' ); ?></option>
@@ -572,11 +573,13 @@ class Community_Auctions_Auction_CPT {
             return;
         }
 
-        if ( empty( $_GET['ca_visibility'] ) ) {
+        $visibility = (string) filter_input( INPUT_GET, 'ca_visibility', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+        $visibility = sanitize_text_field( wp_unslash( $visibility ) );
+
+        if ( '' === $visibility ) {
             return;
         }
 
-        $visibility = sanitize_text_field( wp_unslash( $_GET['ca_visibility'] ) );
         $meta_query = array(
             array(
                 'key'     => 'ca_visibility',
@@ -607,12 +610,14 @@ class Community_Auctions_Auction_CPT {
     }
 
     public static function bulk_action_notice() {
-        if ( empty( $_GET['ca_visibility_updated'] ) ) {
+        $updated = filter_input( INPUT_GET, 'ca_visibility_updated', FILTER_VALIDATE_INT );
+        if ( empty( $updated ) ) {
             return;
         }
 
-        $count = intval( $_GET['ca_visibility_updated'] );
+        $count = absint( $updated );
         echo '<div class="notice notice-success is-dismissible"><p>' .
+            /* translators: %d: number of auctions updated by bulk action. */
             esc_html( sprintf( __( 'Updated visibility for %d auctions.', 'community-auctions' ), $count ) ) .
             '</p></div>';
     }
