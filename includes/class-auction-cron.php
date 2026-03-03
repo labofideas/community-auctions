@@ -133,14 +133,46 @@ class Community_Auctions_Auction_Cron {
         }
 
         if ( 'woocommerce' === $provider ) {
-            return Community_Auctions_Payment_WooCommerce::create_order_for_auction( $auction_id, $winner_id, $amount, $fee_amount );
+            $order = Community_Auctions_Payment_WooCommerce::create_order_for_auction( $auction_id, $winner_id, $amount, $fee_amount );
+            if ( is_wp_error( $order ) ) {
+                return $order;
+            }
+            return self::extract_order_id( $order );
         }
 
         if ( 'fluentcart' === $provider ) {
-            return Community_Auctions_Payment_FluentCart::create_order_for_auction( $auction_id, $winner_id, $amount, $fee_amount );
+            $order = Community_Auctions_Payment_FluentCart::create_order_for_auction( $auction_id, $winner_id, $amount, $fee_amount );
+            if ( is_wp_error( $order ) ) {
+                return $order;
+            }
+            return self::extract_order_id( $order );
         }
 
         return new WP_Error( 'ca_invalid_provider', __( 'Invalid payment provider.', 'community-auctions' ) );
+    }
+
+    /**
+     * Normalize provider order response to numeric order ID.
+     *
+     * @param mixed $order Provider order response.
+     * @return int
+     */
+    private static function extract_order_id( $order ) {
+        if ( is_numeric( $order ) ) {
+            return absint( $order );
+        }
+
+        if ( is_object( $order ) ) {
+            if ( method_exists( $order, 'get_id' ) ) {
+                return absint( $order->get_id() );
+            }
+
+            if ( isset( $order->id ) ) {
+                return absint( $order->id );
+            }
+        }
+
+        return 0;
     }
 
     private static function schedule_payment_reminder( $auction_id, $winner_id, $order_id ) {

@@ -172,11 +172,13 @@ class Community_Auctions_Realtime_Updates {
 			$status = 'ended';
 		}
 
-		// Get bidder display name if exists.
+		// Only expose bidder identity to authenticated users.
 		$bidder_name = '';
-		if ( $current_bidder ) {
+		$bidder_id   = 0;
+		if ( is_user_logged_in() && $current_bidder ) {
 			$bidder      = get_userdata( $current_bidder );
 			$bidder_name = $bidder ? $bidder->display_name : __( 'Anonymous', 'community-auctions' );
+			$bidder_id   = $current_bidder;
 		}
 
 		// Format current bid for display.
@@ -190,7 +192,7 @@ class Community_Auctions_Realtime_Updates {
 			'bid_count'      => $bid_count,
 			'unique_bidders' => $unique_bidders,
 			'current_bidder' => array(
-				'id'   => $current_bidder,
+				'id'   => $bidder_id,
 				'name' => $bidder_name,
 			),
 			'end_time'       => $end_time,

@@ -104,8 +104,7 @@ class Community_Auctions_Buy_Now {
 			return $validation;
 		}
 
-		$auction        = get_post( $auction_id );
-		$buy_now_price  = floatval( get_post_meta( $auction_id, 'ca_buy_now_price', true ) );
+		$buy_now_price = floatval( get_post_meta( $auction_id, 'ca_buy_now_price', true ) );
 
 		// Process the purchase.
 		$result = self::process_buy_now( $auction_id, $user_id, $buy_now_price );
@@ -228,6 +227,21 @@ class Community_Auctions_Buy_Now {
 			);
 		}
 
+		// Respect group-only visibility restrictions.
+		if ( ! self::can_user_access_auction( $auction_id, $user_id ) ) {
+			return new WP_Error(
+				'auction_no_access',
+				__( 'You do not have access to this auction.', 'community-auctions' ),
+				array( 'status' => 403 )
+			);
+		}
+
+		// Require a valid/available payment provider before purchase.
+		$provider_error = self::validate_payment_provider();
+		if ( is_wp_error( $provider_error ) ) {
+			return $provider_error;
+		}
+
 		// Check auction hasn't ended.
 		$end_at = get_post_meta( $auction_id, 'ca_end_at', true );
 		if ( $end_at && strtotime( $end_at ) < time() ) {
@@ -252,10 +266,90 @@ class Community_Auctions_Buy_Now {
 	public static function process_buy_now( $auction_id, $user_id, $buy_now_price ) {
 		global $wpdb;
 
+		$lock_key = 'ca_buy_now_lock';
+		if ( ! add_post_meta( $auction_id, $lock_key, time(), true ) ) {
+			$existing_lock = absint( get_post_meta( $auction_id, $lock_key, true ) );
+			$lock_ttl      = 120;
+			if ( $existing_lock > 0 && ( time() - $existing_lock ) > $lock_ttl ) {
+				delete_post_meta( $auction_id, $lock_key );
+				if ( ! add_post_meta( $auction_id, $lock_key, time(), true ) ) {
+					return new WP_Error(
+						'buy_now_in_progress',
+						__( 'This purchase is already being processed. Please try again.', 'community-auctions' ),
+						array( 'status' => 409 )
+					);
+				}
+				} else {
+					return new WP_Error(
+						'buy_now_in_progress',
+						__( 'This purchase is already being processed. Please try again.', 'community-auctions' ),
+						array( 'status' => 409 )
+					);
+				}
+			}
+
 		// Start transaction.
 		$wpdb->query( 'START TRANSACTION' );
 
 		try {
+			// Re-check inside lock to avoid double purchase race.
+			if ( ! empty( get_post_meta( $auction_id, 'ca_bought_now', true ) ) ) {
+				$wpdb->query( 'ROLLBACK' );
+				return new WP_Error(
+					'already_bought',
+					__( 'This auction has already been purchased.', 'community-auctions' ),
+					array( 'status' => 409 )
+				);
+			}
+
+			$status = get_post_status( $auction_id );
+			if ( ! in_array( $status, array( 'publish', 'ca_live' ), true ) ) {
+				$wpdb->query( 'ROLLBACK' );
+				return new WP_Error(
+					'auction_not_live',
+					__( 'This auction is not currently active.', 'community-auctions' ),
+					array( 'status' => 400 )
+				);
+			}
+
+			$provider = self::get_selected_payment_provider();
+			if ( empty( $provider ) ) {
+				$wpdb->query( 'ROLLBACK' );
+				return new WP_Error(
+					'payment_provider_missing',
+					__( 'No supported payment provider is configured.', 'community-auctions' ),
+					array( 'status' => 400 )
+				);
+			}
+
+			$order_id    = 0;
+			$payment_url = '';
+
+			if ( 'woocommerce' === $provider ) {
+				$order = Community_Auctions_Payment_WooCommerce::create_order_for_auction( $auction_id, $user_id, $buy_now_price );
+				if ( is_wp_error( $order ) ) {
+					throw new Exception( $order->get_error_message() );
+				}
+				$order_id = self::extract_order_id( $order );
+				$payment_url = Community_Auctions_Payment_Status::get_payment_link( $order_id, $provider );
+			} elseif ( 'fluentcart' === $provider ) {
+				$order = Community_Auctions_Payment_FluentCart::create_order_for_auction( $auction_id, $user_id, $buy_now_price );
+				if ( is_wp_error( $order ) ) {
+					throw new Exception( $order->get_error_message() );
+				}
+				$order_id = self::extract_order_id( $order );
+				$payment_url = Community_Auctions_Payment_Status::get_payment_link( $order_id, $provider );
+			}
+
+			if ( ! $order_id ) {
+				$wpdb->query( 'ROLLBACK' );
+				return new WP_Error(
+					'order_create_failed',
+					__( 'Failed to create payment order.', 'community-auctions' ),
+					array( 'status' => 500 )
+				);
+			}
+
 			// Mark auction as bought.
 			update_post_meta( $auction_id, 'ca_bought_now', 1 );
 			update_post_meta( $auction_id, 'ca_bought_now_user', $user_id );
@@ -271,29 +365,7 @@ class Community_Auctions_Buy_Now {
 				)
 			);
 
-			// Create payment order.
-			$settings = Community_Auctions_Settings::get_settings();
-			$provider = $settings['payment_provider'] ?? '';
-			$order_id = 0;
-			$payment_url = '';
-
-			if ( 'woocommerce' === $provider && class_exists( 'Community_Auctions_Payment_WooCommerce' ) ) {
-				$order_id = Community_Auctions_Payment_WooCommerce::create_order( $auction_id, $user_id, $buy_now_price );
-				if ( is_wp_error( $order_id ) ) {
-					throw new Exception( $order_id->get_error_message() );
-				}
-				$payment_url = Community_Auctions_Payment_Status::get_payment_link( $order_id, $provider );
-			} elseif ( 'fluentcart' === $provider && class_exists( 'Community_Auctions_Payment_FluentCart' ) ) {
-				$order_id = Community_Auctions_Payment_FluentCart::create_order( $auction_id, $user_id, $buy_now_price );
-				if ( is_wp_error( $order_id ) ) {
-					throw new Exception( $order_id->get_error_message() );
-				}
-				$payment_url = Community_Auctions_Payment_Status::get_payment_link( $order_id, $provider );
-			}
-
-			if ( $order_id ) {
-				update_post_meta( $auction_id, 'ca_order_id', $order_id );
-			}
+			update_post_meta( $auction_id, 'ca_order_id', $order_id );
 
 			// Fire action hook.
 			do_action( 'community_auctions/buy_now_completed', $auction_id, $user_id, $buy_now_price, $order_id );
@@ -316,7 +388,92 @@ class Community_Auctions_Buy_Now {
 				$e->getMessage(),
 				array( 'status' => 500 )
 			);
+		} finally {
+			delete_post_meta( $auction_id, $lock_key );
 		}
+	}
+
+	/**
+	 * Validate selected payment provider and availability.
+	 *
+	 * @return true|WP_Error
+	 */
+	private static function validate_payment_provider() {
+		$provider = self::get_selected_payment_provider();
+		if ( empty( $provider ) ) {
+			return new WP_Error(
+				'payment_provider_missing',
+				__( 'A valid payment provider must be configured before purchase.', 'community-auctions' ),
+				array( 'status' => 400 )
+			);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Get selected and available payment provider.
+	 *
+	 * @return string Empty string when not available.
+	 */
+	private static function get_selected_payment_provider() {
+		$settings = Community_Auctions_Settings::get_settings();
+		$provider = $settings['payment_provider'] ?? '';
+
+		if ( 'woocommerce' === $provider && class_exists( 'Community_Auctions_Payment_WooCommerce' ) && Community_Auctions_Payment_WooCommerce::is_available() ) {
+			return 'woocommerce';
+		}
+
+		if ( 'fluentcart' === $provider && class_exists( 'Community_Auctions_Payment_FluentCart' ) && Community_Auctions_Payment_FluentCart::is_available() ) {
+			return 'fluentcart';
+		}
+
+		return '';
+	}
+
+	/**
+	 * Check if user is allowed to access auction based on visibility rules.
+	 *
+	 * @param int $auction_id Auction ID.
+	 * @param int $user_id    User ID.
+	 * @return bool
+	 */
+	private static function can_user_access_auction( $auction_id, $user_id ) {
+		$visibility = get_post_meta( $auction_id, 'ca_visibility', true );
+		if ( 'group_only' !== $visibility ) {
+			return true;
+		}
+
+		$group_id = absint( get_post_meta( $auction_id, 'ca_group_id', true ) );
+		if ( ! $group_id || ! function_exists( 'groups_is_user_member' ) ) {
+			return false;
+		}
+
+		return groups_is_user_member( $user_id, $group_id );
+	}
+
+	/**
+	 * Extract numeric order ID from provider response.
+	 *
+	 * @param mixed $order Provider order response.
+	 * @return int
+	 */
+	private static function extract_order_id( $order ) {
+		if ( is_numeric( $order ) ) {
+			return absint( $order );
+		}
+
+		if ( is_object( $order ) ) {
+			if ( method_exists( $order, 'get_id' ) ) {
+				return absint( $order->get_id() );
+			}
+
+			if ( isset( $order->id ) ) {
+				return absint( $order->id );
+			}
+		}
+
+		return 0;
 	}
 
 	/**
@@ -341,34 +498,30 @@ class Community_Auctions_Buy_Now {
 
 		$auction_title = get_the_title( $auction_id );
 		$auction_url   = get_permalink( $auction_id );
+		$amount_label  = number_format( $buy_now_price, 2 );
 
 		// Notify buyer.
 		if ( class_exists( 'Community_Auctions_Notifications' ) ) {
-			Community_Auctions_Notifications::send(
-				'auction_won',
-				$buyer->user_email,
-				array(
-					'auction_title'  => $auction_title,
-					'auction_url'    => $auction_url,
-					'final_price'    => number_format( $buy_now_price, 2 ),
-					'recipient_name' => $buyer->display_name,
-					'purchase_type'  => __( 'Buy It Now', 'community-auctions' ),
-				)
+			$buyer_subject = __( 'You purchased an auction', 'community-auctions' );
+			$buyer_message = sprintf(
+				/* translators: 1: auction title, 2: amount, 3: auction URL */
+				__( 'You successfully purchased "%1$s" via Buy It Now for %2$s. View details: %3$s', 'community-auctions' ),
+				$auction_title,
+				$amount_label,
+				$auction_url
 			);
+			Community_Auctions_Notifications::send_email( $user_id, $buyer_subject, $buyer_message );
 
-			// Notify seller.
-			Community_Auctions_Notifications::send(
-				'auction_sold',
-				$seller->user_email,
-				array(
-					'auction_title'  => $auction_title,
-					'auction_url'    => $auction_url,
-					'final_price'    => number_format( $buy_now_price, 2 ),
-					'recipient_name' => $seller->display_name,
-					'buyer_name'     => $buyer->display_name,
-					'purchase_type'  => __( 'Buy It Now', 'community-auctions' ),
-				)
+			$seller_subject = __( 'Your auction was sold', 'community-auctions' );
+			$seller_message = sprintf(
+				/* translators: 1: auction title, 2: buyer display name, 3: amount, 4: auction URL */
+				__( 'Your auction "%1$s" was purchased by %2$s via Buy It Now for %3$s. View details: %4$s', 'community-auctions' ),
+				$auction_title,
+				$buyer->display_name,
+				$amount_label,
+				$auction_url
 			);
+			Community_Auctions_Notifications::send_email( $auction->post_author, $seller_subject, $seller_message );
 		}
 	}
 
@@ -443,7 +596,7 @@ class Community_Auctions_Buy_Now {
 			return '';
 		}
 
-		$can_buy = is_user_logged_in() && current_user_can( 'ca_place_bid' );
+		$can_buy = is_user_logged_in() && current_user_can( 'ca_place_bid' ) && self::can_user_access_auction( $auction_id, get_current_user_id() );
 
 		// Check if user is the seller.
 		$auction = get_post( $auction_id );
