@@ -535,7 +535,7 @@ class Community_Auctions_REST_API {
 		$auctions = array();
 		foreach ( $query->posts as $post ) {
 			$auction            = self::format_auction( $post->ID );
-			$order_id           = absint( get_post_meta( $post->ID, 'ca_order_id', true ) );
+			$order_id           = Community_Auctions_Payment_Status::normalize_order_id( get_post_meta( $post->ID, 'ca_order_id', true ) );
 			$auction['paid']    = $order_id ? Community_Auctions_Payment_Status::is_order_paid( $order_id, $provider ) : false;
 			$auction['pay_url'] = '';
 

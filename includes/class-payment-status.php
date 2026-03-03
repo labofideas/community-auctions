@@ -20,8 +20,26 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.0.0
  */
 class Community_Auctions_Payment_Status {
+    public static function normalize_order_id( $order_id ) {
+        if ( is_numeric( $order_id ) ) {
+            return absint( $order_id );
+        }
+
+        if ( is_object( $order_id ) ) {
+            if ( method_exists( $order_id, 'get_id' ) ) {
+                return absint( $order_id->get_id() );
+            }
+
+            if ( isset( $order_id->id ) ) {
+                return absint( $order_id->id );
+            }
+        }
+
+        return 0;
+    }
+
     public static function is_order_paid( $order_id, $provider ) {
-        $order_id = absint( $order_id );
+        $order_id = self::normalize_order_id( $order_id );
         if ( ! $order_id ) {
             return false;
         }
@@ -44,7 +62,7 @@ class Community_Auctions_Payment_Status {
     }
 
     public static function get_payment_link( $order_id, $provider ) {
-        $order_id = absint( $order_id );
+        $order_id = self::normalize_order_id( $order_id );
         if ( ! $order_id ) {
             return '';
         }
@@ -70,12 +88,13 @@ class Community_Auctions_Payment_Status {
 
     public static function update_auction_payment( $auction_id, $provider, $order_id, $is_paid, $status = '' ) {
         $auction_id = absint( $auction_id );
+        $order_id   = self::normalize_order_id( $order_id );
         if ( ! $auction_id ) {
             return;
         }
 
         update_post_meta( $auction_id, 'ca_payment_status', $status ? $status : ( $is_paid ? 'paid' : 'pending' ) );
-        update_post_meta( $auction_id, 'ca_order_id', absint( $order_id ) );
+        update_post_meta( $auction_id, 'ca_order_id', $order_id );
         if ( $is_paid ) {
             update_post_meta( $auction_id, 'ca_paid_at', gmdate( 'Y-m-d H:i:s' ) );
             do_action( 'community_auctions/auction_payment_completed', $auction_id, $provider, $order_id );

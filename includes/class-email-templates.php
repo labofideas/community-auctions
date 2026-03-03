@@ -345,7 +345,7 @@ class Community_Auctions_Email_Templates {
 		if ( $winner_id ) {
 			$winner = get_userdata( $winner_id );
 			if ( $winner && $winner->user_email ) {
-				$order_id = absint( get_post_meta( $auction_id, 'ca_order_id', true ) );
+				$order_id = Community_Auctions_Payment_Status::normalize_order_id( get_post_meta( $auction_id, 'ca_order_id', true ) );
 				$pay_url  = '';
 
 				if ( $order_id ) {

@@ -254,7 +254,7 @@ class Community_Auctions_Seller_Dashboard {
 		$start_price   = get_post_meta( $auction_id, 'ca_start_price', true );
 		$end_at        = get_post_meta( $auction_id, 'ca_end_at', true );
 		$winner_id     = absint( get_post_meta( $auction_id, 'ca_winner_id', true ) );
-		$order_id      = absint( get_post_meta( $auction_id, 'ca_order_id', true ) );
+		$order_id      = Community_Auctions_Payment_Status::normalize_order_id( get_post_meta( $auction_id, 'ca_order_id', true ) );
 		$bid_count     = Community_Auctions_Bid_Repository::count_auction_bids( $auction_id );
 		$post_status   = get_post_status( $auction_id );
 

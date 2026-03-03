@@ -257,7 +257,7 @@ class Community_Auctions_Buyer_Dashboard {
 		// Filter by payment status.
 		$filtered = array();
 		foreach ( $won_auctions as $auction_id ) {
-			$order_id = absint( get_post_meta( $auction_id, 'ca_order_id', true ) );
+			$order_id = Community_Auctions_Payment_Status::normalize_order_id( get_post_meta( $auction_id, 'ca_order_id', true ) );
 			$paid     = $order_id ? Community_Auctions_Payment_Status::is_order_paid( $order_id, $provider ) : false;
 
 			if ( 'pending' === $filter && ! $paid ) {
@@ -301,7 +301,7 @@ class Community_Auctions_Buyer_Dashboard {
 	 */
 	private static function render_won_row( $auction_id, $provider ) {
 		$final_bid    = get_post_meta( $auction_id, 'ca_current_bid', true );
-		$order_id     = absint( get_post_meta( $auction_id, 'ca_order_id', true ) );
+		$order_id     = Community_Auctions_Payment_Status::normalize_order_id( get_post_meta( $auction_id, 'ca_order_id', true ) );
 		$end_at       = get_post_meta( $auction_id, 'ca_end_at', true );
 		$seller_id    = get_post_field( 'post_author', $auction_id );
 		$paid         = $order_id ? Community_Auctions_Payment_Status::is_order_paid( $order_id, $provider ) : false;
@@ -449,7 +449,7 @@ class Community_Auctions_Buyer_Dashboard {
 		$total_spent     = 0;
 
 		foreach ( $won_auctions as $auction_id ) {
-			$order_id  = absint( get_post_meta( $auction_id, 'ca_order_id', true ) );
+			$order_id  = Community_Auctions_Payment_Status::normalize_order_id( get_post_meta( $auction_id, 'ca_order_id', true ) );
 			$final_bid = floatval( get_post_meta( $auction_id, 'ca_current_bid', true ) );
 			$paid      = $order_id ? Community_Auctions_Payment_Status::is_order_paid( $order_id, $provider ) : false;
 

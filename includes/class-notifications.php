@@ -72,7 +72,7 @@ class Community_Auctions_Notifications {
 
         $subject = self::format_subject( __( 'You won the auction', 'community-auctions' ) );
         $link = get_permalink( $auction_id );
-        $order_id = absint( get_post_meta( $auction_id, 'ca_order_id', true ) );
+        $order_id = Community_Auctions_Payment_Status::normalize_order_id( get_post_meta( $auction_id, 'ca_order_id', true ) );
         $pay_link = '';
         if ( $order_id ) {
             $provider = Community_Auctions_Settings::get_settings()['payment_provider'] ?? '';
@@ -96,7 +96,7 @@ class Community_Auctions_Notifications {
 
         $subject = self::format_subject( __( 'Payment reminder for your auction', 'community-auctions' ) );
         $link = get_permalink( $auction_id );
-        $order_id = absint( get_post_meta( $auction_id, 'ca_order_id', true ) );
+        $order_id = Community_Auctions_Payment_Status::normalize_order_id( get_post_meta( $auction_id, 'ca_order_id', true ) );
         $pay_link = '';
         if ( $order_id ) {
             $provider = Community_Auctions_Settings::get_settings()['payment_provider'] ?? '';

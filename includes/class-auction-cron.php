@@ -194,7 +194,7 @@ class Community_Auctions_Auction_Cron {
     }
 
     public static function handle_payment_reminder( $auction_id, $winner_id ) {
-        $order_id = absint( get_post_meta( $auction_id, 'ca_order_id', true ) );
+        $order_id = Community_Auctions_Payment_Status::normalize_order_id( get_post_meta( $auction_id, 'ca_order_id', true ) );
         if ( ! $order_id ) {
             return;
         }

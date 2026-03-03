@@ -129,7 +129,7 @@ class Community_Auctions_Auction_Shortcodes {
             $current_bid = get_post_meta( $auction_id, 'ca_current_bid', true );
             $start_price = get_post_meta( $auction_id, 'ca_start_price', true );
             $end_at      = get_post_meta( $auction_id, 'ca_end_at', true );
-            $order_id    = absint( get_post_meta( $auction_id, 'ca_order_id', true ) );
+            $order_id    = Community_Auctions_Payment_Status::normalize_order_id( get_post_meta( $auction_id, 'ca_order_id', true ) );
             $status      = get_post_status( $auction_id );
             $bid_count   = absint( get_post_meta( $auction_id, 'ca_bid_count', true ) );
             $thumbnail   = get_the_post_thumbnail( $auction_id, 'medium', array( 'class' => 'ca-card-image', 'alt' => get_the_title() ) );
@@ -370,7 +370,7 @@ class Community_Auctions_Auction_Shortcodes {
             return '';
         }
 
-        $order_id = absint( get_post_meta( $auction_id, 'ca_order_id', true ) );
+        $order_id = Community_Auctions_Payment_Status::normalize_order_id( get_post_meta( $auction_id, 'ca_order_id', true ) );
         if ( ! $order_id ) {
             return '<p>' . esc_html__( 'Your payment will be created shortly.', 'community-auctions' ) . '</p>';
         }
