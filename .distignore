@@ -1,0 +1,14 @@
+/.git
+/.github
+/docs/internal
+/node_modules
+/tests
+/test-results
+/src
+/bin
+/phpunit.xml
+/playwright.config.ts
+/webpack.config.js
+/package.json
+/package-lock.json
+/composer.lock

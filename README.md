@@ -1,80 +1,128 @@
-=== Community Auctions ===
-
-Contributors: wbcomdesigns
-Tags: auctions, buddypress, bidding, ecommerce
-Requires at least: 6.0
-Tested up to: 6.9
-Requires PHP: 7.4
-Stable tag: 0.1.0
-License: GPLv2 or later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
-
 # Community Auctions
 
-A BuddyPress-compatible auction plugin for WordPress with WooCommerce or FluentCart payment integration.
+A WordPress plugin for running member-driven auctions inside BuddyPress communities.
 
-## Description
+Community Auctions lets users create listings, bid in real time, follow auctions, and complete checkout through WooCommerce or FluentCart.
 
-Community Auctions enables your community members to create and participate in auctions. Built with BuddyPress integration, it provides a seamless auction experience within your community platform.
+## Why This Plugin Exists
 
-## Features
+Most auction plugins are built for marketplace sites where one store owner controls everything.
+This plugin is built for community sites where members create and bid on each other's listings.
 
-- **Auction Management** - Create, edit, and manage auctions with ease
-- **BuddyPress Integration** - Member profiles, activity stream, notifications
-- **Real-time Updates** - Live bid updates without page refresh
-- **Payment Integration** - WooCommerce and FluentCart support
-- **Watchlist** - Follow auctions and get notified
-- **Buy It Now** - Optional instant purchase option
-- **Image Gallery** - Multiple images per auction with lightbox
-- **Search & Filter** - AJAX-powered search with filters
-- **Seller Dashboard** - Manage your auctions and track earnings
-- **Buyer Dashboard** - View won auctions and payment status
-- **Email Notifications** - Outbid, won, payment reminders
-- **Countdown Timers** - Visual countdown with urgency states
-- **Currency Support** - Configurable currency formatting
-- **Timezone Handling** - Proper timezone support
+## Current Status
 
-## Requirements
+- Version: `0.1.0`
+- WordPress: `6.0+`
+- PHP: `7.4+`
+- Payments: WooCommerce and FluentCart
+- BuddyPress: Optional, but recommended for profile/activity integration
 
-- WordPress 6.0+
-- PHP 7.4+
-- BuddyPress (recommended)
-- WooCommerce or FluentCart (for payments)
+## Core Features
 
-## Installation
-
-1. Upload the `community-auctions` folder to `/wp-content/plugins/`
-2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Configure settings under Settings > Community Auctions
-4. (Optional) Set up WooCommerce or FluentCart for payments
+- Frontend auction creation and bidding
+- Real-time bid refresh (AJAX polling)
+- Buy Now support for instant purchase
+- Watchlist and ending-soon reminders
+- Seller dashboard (manage active and ended listings)
+- Buyer dashboard (won auctions and payment state)
+- Search and filtering tools
+- Countdown timers with timezone-aware display
+- Email notifications (outbid, won, reminders)
+- BuddyPress activity + member auction screens
+- Gutenberg blocks and shortcodes
 
 ## Shortcodes
 
-| Shortcode | Description |
-|-----------|-------------|
-| `[community_auctions_list]` | Display auction listings |
-| `[community_auctions_search]` | Search and filter auctions |
+| Shortcode | Purpose |
+| --- | --- |
+| `[community_auctions_list]` | Show auction listings |
+| `[community_auctions_search]` | Show search + filters |
 | `[community_auctions_upcoming]` | Show upcoming auctions |
-| `[community_auction_watchlist]` | User's watchlist |
-| `[community_auction_seller_dashboard]` | Seller management dashboard |
-| `[community_auction_buyer_dashboard]` | Buyer purchases dashboard |
+| `[community_auction_watchlist]` | Show logged-in user watchlist |
+| `[community_auction_seller_dashboard]` | Seller management view |
+| `[community_auction_buyer_dashboard]` | Buyer purchases/wins view |
 
-## REST API
+## Installation
 
-The plugin provides a comprehensive REST API under the `community-auctions/v1` namespace.
+1. Copy the plugin folder to `wp-content/plugins/community-auctions`
+2. Activate **Community Auctions** in WordPress admin
+3. Go to `Settings > Community Auctions` and configure permissions/options
+4. Add shortcodes to pages (listing, search, seller dashboard, buyer dashboard)
+5. Configure WooCommerce or FluentCart if payments are required
+
+## Quick Start (Recommended Page Setup)
+
+Create these pages and place one shortcode on each:
+
+- Auctions: `[community_auctions_list]`
+- Search Auctions: `[community_auctions_search]`
+- My Watchlist: `[community_auction_watchlist]`
+- Seller Dashboard: `[community_auction_seller_dashboard]`
+- Buyer Dashboard: `[community_auction_buyer_dashboard]`
 
 ## BuddyPress Integration
 
-When BuddyPress is active:
-- Auction activity appears in the activity stream
-- Member profile tabs for auctions and bids
-- BuddyPress notifications for auction events
-- Group auction support
+When BuddyPress is active, the plugin adds:
+
+- Activity entries for auction events
+- Member profile auction tabs
+- Auction-related notifications
+- Group-level auction support (where enabled)
+
+## REST API
+
+Namespace: `community-auctions/v1`
+
+Use the REST endpoints for custom frontend apps or integrations with external systems.
+
+## Development
+
+### JavaScript build
+
+```bash
+npm install
+npm run build
+```
+
+### Watch mode
+
+```bash
+npm run start
+```
+
+### E2E tests
+
+```bash
+npm run test:e2e
+```
+
+### PHPUnit tests
+
+```bash
+composer install
+composer run test:phpunit
+```
+
+## Roadmap
+
+- Improve auction moderation workflow
+- Expand payment/reconciliation reporting
+- Add more block-level customization options
+- Improve automated test coverage across payment flows
+
+## Contributing
+
+Issues and pull requests are welcome.
+Please include reproduction steps, expected behavior, and environment details in bug reports.
+
+## Changelog
+
+See [CHANGELOG.md](./CHANGELOG.md).
 
 ## License
 
-GPL-2.0+
+GPL-2.0-or-later
 
-## Author
+## Maintainer
 
 [Wbcom Designs](https://wbcomdesigns.com)

@@ -317,12 +317,12 @@ community-auctions/
 
 ## How to Continue
 
-1. Provide this file to Claude
-2. Mention specific area to work on (e.g., "continue work on Community Auctions plugin")
-3. Reference the plan file at `~/.claude/plans/compressed-marinating-lovelace.md` if needed
+1. Review the "Known Issues / TODO" section
+2. Pick one area to continue (e.g., search, dashboards, or payments)
+3. Run relevant tests before committing changes
 
 ---
 
 ## Plan File Location
 
-Full implementation plan: `/Users/shashank/.claude/plans/compressed-marinating-lovelace.md`
+Internal implementation plan: tracked in team project documentation
