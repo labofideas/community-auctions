@@ -1,5 +1,4 @@
 <?php
-// phpcs:ignoreFile -- Temporary release compliance to achieve zero Plugin Check findings.
 /**
  * Auction Cron Jobs
  *
@@ -49,7 +48,7 @@ class Community_Auctions_Auction_Cron {
     }
 
     public static function process() {
-        $now = gmdate( 'Y-m-d H:i:s' );
+        $now = current_time( 'mysql' );
 
         $query = new WP_Query( array(
             'post_type'      => 'auction',

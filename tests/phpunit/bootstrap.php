@@ -1,5 +1,4 @@
 <?php
-// phpcs:ignoreFile -- Temporary release compliance to achieve zero Plugin Check findings.
 
 if ( ! defined( 'ABSPATH' ) && defined( 'PHPUNIT_COMPOSER_INSTALL' ) ) {
 	define( 'ABSPATH', dirname( __DIR__, 4 ) . '/' );

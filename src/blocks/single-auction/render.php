@@ -1,5 +1,4 @@
 <?php
-// phpcs:ignoreFile -- Temporary release compliance to achieve zero Plugin Check findings.
 /**
  * Single Auction Block - Server-side render.
  *

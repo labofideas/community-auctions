@@ -1,5 +1,4 @@
 <?php
-// phpcs:ignoreFile -- Temporary release compliance to achieve zero Plugin Check findings.
 /**
  * Auction Shortcodes
  *
@@ -120,6 +119,9 @@ class Community_Auctions_Auction_Shortcodes {
         // Get currency symbol.
         $settings        = Community_Auctions_Settings::get_settings();
         $currency_symbol = isset( $settings['currency_symbol'] ) ? $settings['currency_symbol'] : '$';
+
+        // Prime the post meta cache to avoid N+1 queries inside the loop.
+        update_post_meta_cache( wp_list_pluck( $query->posts, 'ID' ) );
 
         ob_start();
         echo '<div class="ca-auctions-grid" role="list">';

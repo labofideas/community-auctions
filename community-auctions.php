@@ -1,5 +1,4 @@
 <?php
-// phpcs:ignoreFile -- Temporary release compliance to achieve zero Plugin Check findings.
 /**
  * Plugin Name: Community Auctions
  * Plugin URI: https://github.com/labofideas/community-auctions
@@ -39,46 +38,24 @@ final class Community_Auctions_Plugin {
     }
 
     private function __construct() {
-        $this->includes();
+        $this->load_autoloader();
         add_action( 'plugins_loaded', array( $this, 'init' ) );
     }
 
-    private function includes() {
-        require_once __DIR__ . '/includes/class-auction-cpt.php';
-        require_once __DIR__ . '/includes/class-auction-taxonomy.php';
-        require_once __DIR__ . '/includes/class-bid-repository.php';
-        require_once __DIR__ . '/includes/class-settings.php';
-        require_once __DIR__ . '/includes/class-buddypress-integration.php';
-        require_once __DIR__ . '/includes/class-payment-woocommerce.php';
-        require_once __DIR__ . '/includes/class-payment-fluentcart.php';
-        require_once __DIR__ . '/includes/class-payment-status.php';
-        require_once __DIR__ . '/includes/class-auction-engine.php';
-        require_once __DIR__ . '/includes/class-bid-history.php';
-        require_once __DIR__ . '/includes/class-image-gallery.php';
-        require_once __DIR__ . '/includes/class-countdown-timer.php';
-        require_once __DIR__ . '/includes/class-bid-confirmation.php';
-        require_once __DIR__ . '/includes/class-realtime-updates.php';
-        require_once __DIR__ . '/includes/class-watchlist.php';
-        require_once __DIR__ . '/includes/class-buy-now.php';
-        require_once __DIR__ . '/includes/class-upcoming-auctions.php';
-        require_once __DIR__ . '/includes/class-seller-dashboard.php';
-        require_once __DIR__ . '/includes/class-buyer-dashboard.php';
-        require_once __DIR__ . '/includes/class-currency.php';
-        require_once __DIR__ . '/includes/class-timezone.php';
-        require_once __DIR__ . '/includes/class-email-templates.php';
-        require_once __DIR__ . '/includes/class-rest-api.php';
-        require_once __DIR__ . '/includes/class-search-filter.php';
-        require_once __DIR__ . '/includes/class-performance.php';
-        require_once __DIR__ . '/includes/class-admin-panel.php';
-        require_once __DIR__ . '/includes/class-frontend-forms.php';
-        require_once __DIR__ . '/includes/class-auction-shortcodes.php';
-        require_once __DIR__ . '/includes/class-auction-cron.php';
-        require_once __DIR__ . '/includes/class-notifications.php';
-        require_once __DIR__ . '/includes/class-auction-widgets.php';
-        require_once __DIR__ . '/includes/class-admin-dashboard.php';
-        require_once __DIR__ . '/includes/class-blocks.php';
-        require_once __DIR__ . '/includes/class-frontend-templates.php';
-        require_once __DIR__ . '/includes/class-demo-data.php';
+    /**
+     * Load Composer autoloader, falling back to manual includes.
+     */
+    private function load_autoloader() {
+        $autoloader = __DIR__ . '/vendor/autoload.php';
+        if ( file_exists( $autoloader ) ) {
+            require_once $autoloader;
+            return;
+        }
+
+        // Fallback: load files directly when Composer autoload is unavailable.
+        foreach ( glob( __DIR__ . '/includes/class-*.php' ) as $file ) {
+            require_once $file;
+        }
     }
 
     public function init() {
@@ -132,11 +109,6 @@ final class Community_Auctions_Plugin {
     }
 
     public static function activate() {
-        require_once __DIR__ . '/includes/class-auction-cpt.php';
-        require_once __DIR__ . '/includes/class-bid-repository.php';
-        require_once __DIR__ . '/includes/class-watchlist.php';
-        require_once __DIR__ . '/includes/class-settings.php';
-
         Community_Auctions_Auction_CPT::register_post_type();
         flush_rewrite_rules();
         Community_Auctions_Bid_Repository::create_table();

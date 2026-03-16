@@ -1,5 +1,4 @@
 <?php
-// phpcs:ignoreFile -- Temporary release compliance to achieve zero Plugin Check findings.
 /**
  * Buy It Now - Instant purchase option for auctions.
  *
@@ -266,26 +265,19 @@ class Community_Auctions_Buy_Now {
 	public static function process_buy_now( $auction_id, $user_id, $buy_now_price ) {
 		global $wpdb;
 
-		$lock_key = 'ca_buy_now_lock';
-		if ( ! add_post_meta( $auction_id, $lock_key, time(), true ) ) {
-			$existing_lock = absint( get_post_meta( $auction_id, $lock_key, true ) );
-			$lock_ttl      = 120;
-			if ( $existing_lock > 0 && ( time() - $existing_lock ) > $lock_ttl ) {
-				delete_post_meta( $auction_id, $lock_key );
-				if ( ! add_post_meta( $auction_id, $lock_key, time(), true ) ) {
-					return new WP_Error(
-						'buy_now_in_progress',
-						__( 'This purchase is already being processed. Please try again.', 'community-auctions' ),
-						array( 'status' => 409 )
-					);
-				}
-			} else {
-				return new WP_Error(
-					'buy_now_in_progress',
-					__( 'This purchase is already being processed. Please try again.', 'community-auctions' ),
-					array( 'status' => 409 )
-				);
-			}
+		// Acquire a MySQL advisory lock to prevent concurrent purchases.
+		$lock_name = 'ca_buy_now_' . intval( $auction_id );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		$lock_acquired = $wpdb->get_var(
+			$wpdb->prepare( 'SELECT GET_LOCK( %s, 5 )', $lock_name )
+		);
+
+		if ( '1' !== (string) $lock_acquired ) {
+			return new WP_Error(
+				'buy_now_in_progress',
+				__( 'This purchase is already being processed. Please try again.', 'community-auctions' ),
+				array( 'status' => 409 )
+			);
 		}
 
 		// Start transaction.
@@ -389,7 +381,8 @@ class Community_Auctions_Buy_Now {
 				array( 'status' => 500 )
 			);
 		} finally {
-			delete_post_meta( $auction_id, $lock_key );
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+			$wpdb->get_var( $wpdb->prepare( 'SELECT RELEASE_LOCK( %s )', $lock_name ) );
 		}
 	}
 

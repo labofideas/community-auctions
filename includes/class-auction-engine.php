@@ -141,7 +141,10 @@ class Community_Auctions_Auction_Engine {
         $end_at = get_post_meta( $auction_id, 'ca_end_at', true );
         if ( $end_at ) {
             $end_ts = strtotime( $end_at );
-            if ( $end_ts && $end_ts <= time() ) {
+            if ( false === $end_ts ) {
+                return new WP_Error( 'ca_invalid_end_date', __( 'Auction has an invalid end date.', 'community-auctions' ) );
+            }
+            if ( $end_ts <= time() ) {
                 return new WP_Error( 'ca_auction_ended', __( 'Auction has ended.', 'community-auctions' ) );
             }
         }
