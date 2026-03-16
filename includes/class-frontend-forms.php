@@ -606,7 +606,7 @@ class Community_Auctions_Frontend_Forms {
 
 		// Handle category assignment.
 		if ( ! empty( $_POST['ca_categories'] ) && is_array( $_POST['ca_categories'] ) ) {
-			$category_ids = array_map( 'absint', $_POST['ca_categories'] );
+			$category_ids = array_map( 'absint', wp_unslash( $_POST['ca_categories'] ) );
 			Community_Auctions_Taxonomy::set_auction_categories( $auction_id, $category_ids );
 		} elseif ( ! empty( $_POST['ca_category'] ) ) {
 			$category_id = absint( $_POST['ca_category'] );
@@ -617,7 +617,7 @@ class Community_Auctions_Frontend_Forms {
 
 		// Handle gallery images.
 		if ( ! empty( $_POST['ca_gallery_ids'] ) && is_array( $_POST['ca_gallery_ids'] ) ) {
-			$gallery_ids = array_map( 'absint', $_POST['ca_gallery_ids'] );
+			$gallery_ids = array_map( 'absint', wp_unslash( $_POST['ca_gallery_ids'] ) );
 			Community_Auctions_Image_Gallery::set_gallery_ids( $auction_id, $gallery_ids );
 
 			// Set first image as featured if no featured image.

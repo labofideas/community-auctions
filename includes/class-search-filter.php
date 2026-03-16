@@ -366,9 +366,12 @@ final class Community_Auctions_Search_Filter {
 		global $wpdb;
 
 		$max_bid = $wpdb->get_var(
-			"SELECT MAX( CAST( meta_value AS DECIMAL(10,2) ) )
-			FROM {$wpdb->postmeta}
-			WHERE meta_key = 'ca_current_bid'"
+			$wpdb->prepare(
+				"SELECT MAX( CAST( meta_value AS DECIMAL(10,2) ) )
+				FROM {$wpdb->postmeta}
+				WHERE meta_key = %s",
+				'ca_current_bid'
+			)
 		);
 
 		$price_ranges = array(

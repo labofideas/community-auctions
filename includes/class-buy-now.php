@@ -279,14 +279,14 @@ class Community_Auctions_Buy_Now {
 						array( 'status' => 409 )
 					);
 				}
-				} else {
-					return new WP_Error(
-						'buy_now_in_progress',
-						__( 'This purchase is already being processed. Please try again.', 'community-auctions' ),
-						array( 'status' => 409 )
-					);
-				}
+			} else {
+				return new WP_Error(
+					'buy_now_in_progress',
+					__( 'This purchase is already being processed. Please try again.', 'community-auctions' ),
+					array( 'status' => 409 )
+				);
 			}
+		}
 
 		// Start transaction.
 		$wpdb->query( 'START TRANSACTION' );
