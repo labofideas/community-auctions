@@ -135,7 +135,7 @@ class Community_Auctions_Frontend_Templates {
 		$min_bid = $current_bid ? (float) $current_bid + (float) $bid_increment : (float) $start_price;
 
 		// Time calculations.
-		$now = current_time( 'timestamp' );
+		$now = time();
 		$end_timestamp = $end_at ? strtotime( $end_at ) : 0;
 		$start_timestamp = $start_at ? strtotime( $start_at ) : 0;
 		$is_ended = $end_timestamp && $end_timestamp <= $now;
@@ -373,7 +373,7 @@ class Community_Auctions_Frontend_Templates {
 			$bidder = get_userdata( $bid->user_id );
 			$bidder_name = $bidder ? $bidder->display_name : __( 'Anonymous', 'community-auctions' );
 			$bid_amount = self::format_price( $bid->amount );
-			$bid_time = human_time_diff( strtotime( $bid->created_at ), current_time( 'timestamp' ) );
+			$bid_time = human_time_diff( strtotime( $bid->created_at ), time() );
 
 			printf(
 				'<li class="ca-bid-item">

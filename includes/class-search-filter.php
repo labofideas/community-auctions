@@ -283,7 +283,7 @@ final class Community_Auctions_Search_Filter {
 		$display_price = $current_bid > 0 ? $current_bid : $start_price;
 
 		// Calculate time remaining.
-		$now        = current_time( 'timestamp', true );
+		$now        = time();
 		$end_time   = strtotime( $end_at );
 		$time_left  = $end_time - $now;
 		$time_label = '';

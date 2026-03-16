@@ -141,7 +141,7 @@ class Community_Auctions_Bid_History {
 			'amount'       => floatval( $bid->amount ),
 			'is_proxy'     => (bool) $bid->is_proxy,
 			'created_at'   => $bid->created_at,
-			'time_ago'     => human_time_diff( strtotime( $bid->created_at ), current_time( 'timestamp', true ) ),
+			'time_ago'     => human_time_diff( strtotime( $bid->created_at ), time() ),
 		);
 	}
 
@@ -213,7 +213,7 @@ class Community_Auctions_Bid_History {
 					<?php
 					$display_name = ! empty( $bid->display_name ) ? $bid->display_name : __( 'Anonymous', 'community-auctions' );
 					$avatar_url   = get_avatar_url( $bid->user_id, array( 'size' => 48 ) );
-					$time_ago     = human_time_diff( strtotime( $bid->created_at ), current_time( 'timestamp', true ) );
+					$time_ago     = human_time_diff( strtotime( $bid->created_at ), time() );
 					?>
 					<li class="ca-bid-item <?php echo esc_attr( $bid->is_proxy ? 'ca-bid-item--proxy' : '' ); ?>">
 						<?php if ( '1' === $atts['show_avatars'] ) : ?>

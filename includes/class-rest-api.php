@@ -601,6 +601,12 @@ class Community_Auctions_REST_API {
 			)
 		);
 
+		// Prime post caches to avoid N+1 queries in the loop.
+		$auction_ids = array_unique( wp_list_pluck( $bids, 'auction_id' ) );
+		if ( $auction_ids ) {
+			_prime_post_caches( array_map( 'absint', $auction_ids ), true, true );
+		}
+
 		$formatted = array();
 		foreach ( $bids as $bid ) {
 			$auction_id = absint( $bid->auction_id );
@@ -641,7 +647,7 @@ class Community_Auctions_REST_API {
 		$start_price  = get_post_meta( $auction_id, 'ca_start_price', true );
 		$end_at       = get_post_meta( $auction_id, 'ca_end_at', true );
 		$start_at     = get_post_meta( $auction_id, 'ca_start_at', true );
-		$bid_count    = Community_Auctions_Bid_Repository::count_auction_bids( $auction_id );
+		$bid_count    = absint( get_post_meta( $auction_id, 'ca_bid_count', true ) );
 		$end_timestamp = strtotime( $end_at );
 		$seconds_left = $end_timestamp ? max( 0, $end_timestamp - time() ) : 0;
 

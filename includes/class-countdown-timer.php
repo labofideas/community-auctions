@@ -121,7 +121,7 @@ class Community_Auctions_Countdown_Timer {
 
 		self::enqueue_assets();
 
-		$now            = current_time( 'timestamp', true );
+		$now            = time();
 		$is_ended       = 'end' === $args['type'] && $timestamp <= $now;
 		$is_started     = 'start' === $args['type'] && $timestamp <= $now;
 		$diff           = max( 0, $timestamp - $now );

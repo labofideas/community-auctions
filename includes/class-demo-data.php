@@ -424,7 +424,7 @@ class Community_Auctions_Demo_Data {
 		);
 
 		$auction_ids = array();
-		$now         = current_time( 'timestamp' );
+		$now         = time();
 
 		foreach ( $auctions as $auction ) {
 			// Calculate dates.

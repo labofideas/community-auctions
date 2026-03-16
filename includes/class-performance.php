@@ -532,8 +532,8 @@ final class Community_Auctions_Performance {
 		return array(
 			'total_auctions'     => wp_count_posts( 'auction' ),
 			'live_auctions'      => self::get_live_auction_count(),
-			'total_bids'         => $wpdb->get_var( "SELECT COUNT(*) FROM {$table}" ),
-			'unique_bidders'     => $wpdb->get_var( "SELECT COUNT(DISTINCT user_id) FROM {$table}" ),
+			'total_bids'         => $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $table ) ),
+			'unique_bidders'     => $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(DISTINCT user_id) FROM %i', $table ) ),
 			'has_object_cache'   => wp_using_ext_object_cache(),
 			'has_action_scheduler' => self::has_action_scheduler(),
 			'cache_group'        => self::CACHE_GROUP,

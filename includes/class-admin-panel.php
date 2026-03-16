@@ -1199,8 +1199,8 @@ final class Community_Auctions_Admin_Panel {
 		$unique_bidders = 0;
 
 		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $bids_table ) ) === $bids_table ) {
-			$total_bids     = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$bids_table}" );
-			$unique_bidders = (int) $wpdb->get_var( "SELECT COUNT(DISTINCT user_id) FROM {$bids_table}" );
+			$total_bids     = (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i', $bids_table ) );
+			$unique_bidders = (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(DISTINCT user_id) FROM %i', $bids_table ) );
 		}
 
 		// Pending payments count.

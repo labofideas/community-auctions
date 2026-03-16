@@ -443,10 +443,14 @@ class Community_Auctions_Seller_Dashboard {
 
 		$total_bids = 0;
 		if ( ! empty( $auction_ids ) ) {
-			$table_name = $wpdb->prefix . 'ca_bids';
-			$ids_placeholder = implode( ',', array_map( 'intval', $auction_ids ) );
+			$table_name      = $wpdb->prefix . 'ca_bids';
+			$ids_placeholder = implode( ',', array_fill( 0, count( $auction_ids ), '%d' ) );
+			// phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
 			$total_bids = (int) $wpdb->get_var(
-				"SELECT COUNT(*) FROM {$table_name} WHERE auction_id IN ({$ids_placeholder})"
+				$wpdb->prepare(
+					"SELECT COUNT(*) FROM {$table_name} WHERE auction_id IN ({$ids_placeholder})",
+					$auction_ids
+				)
 			);
 		}
 
