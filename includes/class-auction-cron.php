@@ -48,7 +48,7 @@ class Community_Auctions_Auction_Cron {
     }
 
     public static function process() {
-        $now = current_time( 'mysql' );
+        $now = gmdate( 'Y-m-d H:i:s' );
 
         $query = new WP_Query( array(
             'post_type'      => 'auction',
